@@ -1,0 +1,312 @@
+<Window x:Class="ScanDesk.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ScanDesk" Height="780" Width="1240" MinWidth="960" MinHeight="600"
+        WindowStartupLocation="CenterScreen" Background="#F3F4F6"
+        FontFamily="Segoe UI" FontSize="13" Foreground="{StaticResource TextBrush}"
+        Icon="Assets/ScanDesk.ico" AllowDrop="True" Drop="Window_Drop" PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Window.InputBindings>
+        <KeyBinding Key="S" Modifiers="Control" Command="ApplicationCommands.Save"/>
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Save" Executed="Save_Click"/>
+    </Window.CommandBindings>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="230"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left: scan settings -->
+        <Border Grid.Column="0" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+            <DockPanel Margin="22,20,22,20">
+                <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                    <TextBlock Text="QUALITY (PDF &amp; JPEG)" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox x:Name="QualityBox">
+                        <ComboBoxItem Content="Smaller file" Tag="65"/>
+                        <ComboBoxItem Content="Balanced" Tag="85"/>
+                        <ComboBoxItem Content="Best quality" Tag="95"/>
+                    </ComboBox>
+                    <Button x:Name="SaveButton" Style="{StaticResource AccentButton}" Margin="0,14,0,0" Click="Save_Click"
+                            ToolTip="Save all pages (Ctrl+S)">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE74E;" FontFamily="{StaticResource IconFont}" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="Save as PDF or images…" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,-10,0">
+                    <StackPanel Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="34" Height="34" CornerRadius="8" Background="{StaticResource AccentBrush}">
+                                <TextBlock Text="&#xE8FE;" FontFamily="{StaticResource IconFont}" FontSize="18" Foreground="White"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="ScanDesk" FontSize="18" FontWeight="Bold"/>
+                                <TextBlock Text="Scan to PDF or images" Foreground="{StaticResource MutedBrush}" FontSize="12"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <TextBlock Text="SCANNER" Style="{StaticResource FieldLabel}" Margin="0,24,0,5"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox x:Name="ScannerBox"/>
+                            <Button Grid.Column="1" x:Name="RefreshButton" Style="{StaticResource IconButton}" Margin="6,0,0,0"
+                                    Content="&#xE72C;" ToolTip="Search for scanners again" Click="Refresh_Click"/>
+                        </Grid>
+                        <TextBlock x:Name="ScannerHint" Foreground="{StaticResource MutedBrush}" FontSize="11.5" TextWrapping="Wrap"
+                                   Margin="0,5,0,0" Visibility="Collapsed"/>
+
+                        <TextBlock Text="COLOR" Style="{StaticResource FieldLabel}"/>
+                        <ComboBox x:Name="ColorBox">
+                            <ComboBoxItem Content="Color" Tag="Color"/>
+                            <ComboBoxItem Content="Grayscale" Tag="Grayscale"/>
+                            <ComboBoxItem Content="Black &amp; white (text)" Tag="BlackWhite"/>
+                        </ComboBox>
+
+                        <TextBlock Text="RESOLUTION" Style="{StaticResource FieldLabel}"/>
+                        <ComboBox x:Name="DpiBox">
+                            <ComboBoxItem Content="100 dpi – fast preview" Tag="100"/>
+                            <ComboBoxItem Content="150 dpi – screen" Tag="150"/>
+                            <ComboBoxItem Content="200 dpi – documents" Tag="200"/>
+                            <ComboBoxItem Content="300 dpi – recommended" Tag="300"/>
+                            <ComboBoxItem Content="600 dpi – photos, high detail" Tag="600"/>
+                            <ComboBoxItem Content="1200 dpi – very slow" Tag="1200"/>
+                        </ComboBox>
+
+                        <TextBlock Text="SCAN AREA" Style="{StaticResource FieldLabel}"/>
+                        <ComboBox x:Name="AreaBox">
+                            <ComboBoxItem Content="A4 (210 × 297 mm)" Tag="A4"/>
+                            <ComboBoxItem Content="Letter (8.5 × 11 in)" Tag="Letter"/>
+                            <ComboBoxItem Content="A5 (148 × 210 mm)" Tag="A5"/>
+                            <ComboBoxItem Content="Photo (10 × 15 cm)" Tag="Photo10x15"/>
+                            <ComboBoxItem Content="Whole scanner glass" Tag="FullGlass"/>
+                        </ComboBox>
+
+                        <TextBlock Text="IMAGE CORRECTION" Style="{StaticResource FieldLabel}"/>
+                        <ComboBox x:Name="EnhanceBox">
+                            <ComboBoxItem Content="Document – sharp text, white paper" Tag="Document"/>
+                            <ComboBoxItem Content="Photo – natural colors" Tag="Photo"/>
+                            <ComboBoxItem Content="Off – raw scanner output" Tag="Off"/>
+                        </ComboBox>
+
+                        <TextBlock Text="ROTATE" Style="{StaticResource FieldLabel}"/>
+                        <ComboBox x:Name="RotateBox">
+                            <ComboBoxItem Content="0°" Tag="0"/>
+                            <ComboBoxItem Content="90° clockwise" Tag="90"/>
+                            <ComboBoxItem Content="180°" Tag="180"/>
+                            <ComboBoxItem Content="90° counter-clockwise" Tag="270"/>
+                        </ComboBox>
+
+                        <CheckBox x:Name="DeskewBox" Margin="0,12,0,0" VerticalContentAlignment="Center">
+                            <TextBlock Text="Straighten crooked pages automatically" TextWrapping="Wrap"/>
+                        </CheckBox>
+
+                        <Expander Header="Advanced" Margin="0,14,0,0" Foreground="{StaticResource MutedBrush}" FontWeight="SemiBold" FontSize="12">
+                            <StackPanel Margin="0,6,0,0" TextElement.FontWeight="Normal" TextElement.Foreground="{StaticResource TextBrush}">
+                                <DockPanel Margin="0,4,0,0">
+                                    <TextBlock DockPanel.Dock="Right" Text="{Binding Value, ElementName=BrightnessSlider, StringFormat={}{0:+0;-0;0}}" Width="28" TextAlignment="Right"/>
+                                    <TextBlock Text="Brightness"/>
+                                </DockPanel>
+                                <Slider x:Name="BrightnessSlider" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="5"/>
+                                <DockPanel Margin="0,8,0,0">
+                                    <TextBlock DockPanel.Dock="Right" Text="{Binding Value, ElementName=ContrastSlider, StringFormat={}{0:+0;-0;0}}" Width="28" TextAlignment="Right"/>
+                                    <TextBlock Text="Contrast"/>
+                                </DockPanel>
+                                <Slider x:Name="ContrastSlider" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="5"/>
+                                <Button Style="{StaticResource SoftButton}" Height="26" FontSize="12" HorizontalAlignment="Left" Margin="0,8,0,0"
+                                        Content="Reset" Click="ResetAdvanced_Click"/>
+                            </StackPanel>
+                        </Expander>
+
+                        <Button x:Name="ScanButton" Style="{StaticResource AccentButton}" Margin="0,24,0,0" Click="Scan_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE8FE;" FontFamily="{StaticResource IconFont}" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="ScanButtonText" Text="Scan page" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <TextBlock Text="Place the next page on the glass and press Scan again to add more pages."
+                                   Foreground="{StaticResource MutedBrush}" FontSize="11.5" TextWrapping="Wrap" Margin="0,8,0,0"/>
+
+                        <Button Style="{StaticResource SoftButton}" Margin="0,16,0,0" Click="Import_Click" x:Name="ImportButton">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE8E5;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Add images from PC…" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <!-- Center: preview -->
+        <Grid Grid.Column="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="2,0,2,12" MinHeight="32">
+                <DockPanel x:Name="NormalHeader">
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <TextBlock x:Name="PreviewInfo" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                        <Button x:Name="UndoButton" Style="{StaticResource SoftButton}" Height="32" Click="Undo_Click" Visibility="Collapsed"
+                                ToolTip="Undo the last crop or rotation of this page (Ctrl+Z)">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE7A7;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Undo" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="CropButton" Style="{StaticResource SoftButton}" Height="32" Margin="8,0,0,0" Click="Crop_Click"
+                                ToolTip="Select part of this page to keep">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE7A8;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Crop" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock x:Name="PreviewTitle" Text="Preview" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </DockPanel>
+                <DockPanel x:Name="CropHeader" Visibility="Collapsed">
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <Button Style="{StaticResource SoftButton}" Height="32" Content="Cancel" Click="CropCancel_Click" ToolTip="Stop cropping (Esc)"/>
+                        <Button x:Name="ApplyCropButton" Style="{StaticResource AccentButton}" Height="32" FontSize="13" Width="120" Margin="8,0,0,0"
+                                Click="CropApply_Click" ToolTip="Keep only the selected part (Enter)">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE73E;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Apply crop" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock x:Name="CropHint" Text="Drag over the part of the page you want to keep" FontSize="14" FontWeight="SemiBold"
+                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                </DockPanel>
+            </Grid>
+
+            <Border Grid.Row="1" Background="#E5E7EB" CornerRadius="10" ClipToBounds="True">
+                <Grid>
+                    <Image x:Name="PreviewImage" Stretch="Uniform" Margin="24" RenderOptions.BitmapScalingMode="HighQuality"
+                           SizeChanged="CropCanvas_SizeChanged">
+                        <Image.Effect>
+                            <DropShadowEffect BlurRadius="18" ShadowDepth="2" Opacity="0.18"/>
+                        </Image.Effect>
+                    </Image>
+                    <Canvas x:Name="CropCanvas" Background="Transparent" Visibility="Collapsed" Cursor="Cross" ClipToBounds="True"
+                            MouseLeftButtonDown="Crop_MouseDown" MouseMove="Crop_MouseMove" MouseLeftButtonUp="Crop_MouseUp"
+                            SizeChanged="CropCanvas_SizeChanged">
+                        <Path x:Name="CropShade" Fill="#99111827" IsHitTestVisible="False"/>
+                        <Rectangle x:Name="CropOutline" Stroke="{StaticResource AccentBrush}" StrokeThickness="3" IsHitTestVisible="False"/>
+                        <Rectangle x:Name="CropDashes" Stroke="White" StrokeThickness="1" StrokeDashArray="4 3" IsHitTestVisible="False"/>
+                        <Rectangle x:Name="CropHandle0" Width="12" Height="12" Fill="White" Stroke="{StaticResource AccentBrush}" StrokeThickness="2" IsHitTestVisible="False"/>
+                        <Rectangle x:Name="CropHandle1" Width="12" Height="12" Fill="White" Stroke="{StaticResource AccentBrush}" StrokeThickness="2" IsHitTestVisible="False"/>
+                        <Rectangle x:Name="CropHandle2" Width="12" Height="12" Fill="White" Stroke="{StaticResource AccentBrush}" StrokeThickness="2" IsHitTestVisible="False"/>
+                        <Rectangle x:Name="CropHandle3" Width="12" Height="12" Fill="White" Stroke="{StaticResource AccentBrush}" StrokeThickness="2" IsHitTestVisible="False"/>
+                        <Border x:Name="CropSizeLabel" Background="#E6111827" CornerRadius="4" Padding="7,3" IsHitTestVisible="False">
+                            <TextBlock x:Name="CropSizeText" Foreground="White" FontSize="11.5"/>
+                        </Border>
+                    </Canvas>
+                    <StackPanel x:Name="EmptyState" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="&#xE8FE;" FontFamily="{StaticResource IconFont}" FontSize="48" Foreground="#9CA3AF"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="No pages yet" FontSize="17" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,14,0,4"/>
+                        <TextBlock Text="Put a document on the scanner glass and press Scan page." Foreground="{StaticResource MutedBrush}"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="You can also drag image files into this window." Foreground="{StaticResource MutedBrush}"
+                                   HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                    </StackPanel>
+                    <Border x:Name="BusyOverlay" Background="#B3F3F4F6" Visibility="Collapsed">
+                        <Border Background="White" CornerRadius="10" Padding="26,20" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <StackPanel Width="260">
+                                <TextBlock x:Name="BusyText" Text="Scanning…" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Center"/>
+                                <ProgressBar IsIndeterminate="True" Height="4" Margin="0,14,0,0" Foreground="{StaticResource AccentBrush}"
+                                             BorderThickness="0" Background="#E5E7EB"/>
+                            </StackPanel>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <DockPanel Grid.Row="2" Margin="2,12,2,0" x:Name="StatusBar">
+                <Button x:Name="OpenFolderButton" DockPanel.Dock="Right" Style="{StaticResource SoftButton}" Height="28"
+                        Content="Open folder" Visibility="Collapsed" Click="OpenFolder_Click"/>
+                <TextBlock x:Name="StatusText" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                           Text="Ready."/>
+            </DockPanel>
+        </Grid>
+
+        <!-- Right: pages -->
+        <Border Grid.Column="2" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,0,0,0">
+            <DockPanel Margin="14,20,14,14">
+                <DockPanel DockPanel.Dock="Top" Margin="2,0,0,10">
+                    <Button DockPanel.Dock="Right" Style="{StaticResource SoftButton}" Height="26" Padding="10,0" FontSize="12"
+                            Content="Clear all" Click="ClearAll_Click" x:Name="ClearButton"/>
+                    <TextBlock x:Name="PagesHeader" Text="Pages" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </DockPanel>
+
+                <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="0,10,0,0">
+                    <Button Style="{StaticResource IconButton}" Content="&#xE70E;" ToolTip="Move page up" Click="MoveUp_Click" x:Name="UpButton"/>
+                    <Button Style="{StaticResource IconButton}" Content="&#xE70D;" ToolTip="Move page down" Click="MoveDown_Click" x:Name="DownButton"/>
+                    <Button Style="{StaticResource IconButton}" ToolTip="Rotate left" Click="RotateLeft_Click" x:Name="RotLeftButton">
+                        <TextBlock Text="&#xE7AD;" RenderTransformOrigin="0.5,0.5">
+                            <TextBlock.RenderTransform><ScaleTransform ScaleX="-1"/></TextBlock.RenderTransform>
+                        </TextBlock>
+                    </Button>
+                    <Button Style="{StaticResource IconButton}" Content="&#xE7AD;" ToolTip="Rotate right" Click="RotateRight_Click" x:Name="RotRightButton"/>
+                    <Button Style="{StaticResource IconButton}" Content="&#xE74D;" ToolTip="Delete page (Del)" Click="Delete_Click" x:Name="DeleteButton"
+                            Foreground="#DC2626"/>
+                </UniformGrid>
+
+                <ListBox x:Name="PageList" BorderThickness="0" SelectionMode="Extended" HorizontalContentAlignment="Stretch"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="PageList_SelectionChanged"
+                         KeyDown="PageList_KeyDown" AllowDrop="True"
+                         PreviewMouseLeftButtonDown="PageList_PreviewMouseLeftButtonDown" PreviewMouseMove="PageList_PreviewMouseMove"
+                         Drop="PageList_Drop" DragOver="PageList_DragOver">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0,0,0,8"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="Bd" CornerRadius="8" Padding="8" BorderThickness="2" BorderBrush="Transparent" Background="Transparent">
+                                            <ContentPresenter/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="#F3F4F6"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                                <Setter TargetName="Bd" Property="Background" Value="#EFF6FF"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Border Background="White" HorizontalAlignment="Center" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                                    <Image Source="{Binding Thumbnail}" MaxHeight="200" Stretch="Uniform"/>
+                                </Border>
+                                <TextBlock Text="{Binding Number, StringFormat='Page {0}'}" HorizontalAlignment="Center" Margin="0,6,0,0"
+                                           FontSize="12" Foreground="{StaticResource MutedBrush}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>

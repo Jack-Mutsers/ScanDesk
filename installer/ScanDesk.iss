@@ -1,0 +1,47 @@
+﻿; Inno Setup script for ScanDesk.
+; Build: dotnet publish (see build-installer.ps1), then compile this file with ISCC.exe.
+
+#define AppName "ScanDesk"
+; The version is passed in by build-installer.ps1 (/DAppVersion=x.y.z); this is only a fallback.
+#ifndef AppVersion
+  #define AppVersion "0.0.0-local"
+#endif
+#define AppExe "ScanDesk.exe"
+
+[Setup]
+AppId={{6F1C2B7A-3E4D-4C1B-9A55-5C0D2E8B7A10}
+AppName={#AppName}
+AppVersion={#AppVersion}
+AppVerName={#AppName} {#AppVersion}
+AppPublisher=ScanDesk
+DefaultDirName={autopf}\{#AppName}
+DefaultGroupName={#AppName}
+DisableProgramGroupPage=yes
+UninstallDisplayIcon={app}\{#AppExe}
+SetupIconFile=..\Assets\ScanDesk.ico
+OutputDir=..\dist
+OutputBaseFilename=ScanDesk-Setup-{#AppVersion}
+Compression=lzma2/ultra64
+SolidCompression=yes
+WizardStyle=modern
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
+MinVersion=10.0.17763
+PrivilegesRequiredOverridesAllowed=dialog
+
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
+
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+
+[Files]
+Source: "..\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+[Icons]
+Name: "{autoprograms}\{#AppName}"; Filename: "{app}\{#AppExe}"
+Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; Tasks: desktopicon
+
+[Run]
+Filename: "{app}\{#AppExe}"; Description: "{cm:LaunchProgram,{#AppName}}"; Flags: nowait postinstall skipifsilent
