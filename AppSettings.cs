@@ -5,7 +5,9 @@ namespace ScanDesk;
 
 public sealed class AppSettings
 {
-    public string? ScannerId { get; set; }
+    public string? ScannerId { get; set; }          // last used
+    public string? DefaultScannerId { get; set; }
+    public List<string> HiddenScannerIds { get; set; } = [];
     public ColorMode Color { get; set; } = ColorMode.Color;
     public int Dpi { get; set; } = 300;
     public ScanArea Area { get; set; } = ScanArea.A4;

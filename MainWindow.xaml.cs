@@ -51,27 +51,24 @@ public partial class MainWindow : Window
 
     // ---------- Scanners ----------
 
+    List<ScannerInfo> _allScanners = [];
+
+    /// <summary>An entry in the scanner drop-down.</summary>
+    sealed record ScannerChoice(ScannerInfo Info, bool IsDefault)
+    {
+        public override string ToString() => IsDefault ? $"{Info.Name}  ★" : Info.Name;
+    }
+
+    ScannerInfo? SelectedScanner => (ScannerBox.SelectedItem as ScannerChoice)?.Info;
+
     async Task RefreshScannersAsync()
     {
         SetBusy(true, "Looking for scanners…");
         try
         {
-            var scanners = await WiaScanner.RunStaAsync(WiaScanner.GetScanners);
-            ScannerBox.ItemsSource = scanners;
-            ScannerBox.SelectedItem = scanners.FirstOrDefault(s => s.DeviceId == _settings.ScannerId) ?? scanners.FirstOrDefault();
-
-            if (scanners.Count == 0)
-            {
-                ScannerHint.Text = "No scanner found. Switch the printer on, connect it by USB or Wi-Fi, then press refresh.";
-                ScannerHint.Visibility = Visibility.Visible;
-            }
-            else if (scanners.Count > 1)
-            {
-                ScannerHint.Text = "Your printer may show up twice (USB/network). If one doesn't work, try the other.";
-                ScannerHint.Visibility = Visibility.Visible;
-            }
-            else ScannerHint.Visibility = Visibility.Collapsed;
-            SetStatus(scanners.Count == 0 ? "No scanner found." : $"Found {scanners.Count} scanner(s).");
+            _allScanners = await WiaScanner.RunStaAsync(WiaScanner.GetScanners);
+            ApplyScannerList(keepSelection: false);
+            SetStatus(_allScanners.Count == 0 ? "No scanner found." : $"Found {_allScanners.Count} scanner(s).");
         }
         catch (Exception ex)
         {
@@ -80,14 +77,56 @@ public partial class MainWindow : Window
         finally { SetBusy(false); }
     }
 
+    /// <summary>Fills the drop-down with the scanners that aren't hidden, picking the default one first.</summary>
+    void ApplyScannerList(bool keepSelection)
+    {
+        string? current = keepSelection ? SelectedScanner?.DeviceId : null;
+        var visible = _allScanners
+            .Where(s => !_settings.HiddenScannerIds.Contains(s.DeviceId))
+            .Select(s => new ScannerChoice(s, s.DeviceId == _settings.DefaultScannerId))
+            .ToList();
+        ScannerBox.ItemsSource = visible;
+        ScannerBox.SelectedItem =
+            visible.FirstOrDefault(c => c.Info.DeviceId == current) ??
+            visible.FirstOrDefault(c => c.IsDefault) ??
+            visible.FirstOrDefault(c => c.Info.DeviceId == _settings.ScannerId) ??
+            visible.FirstOrDefault();
+
+        int hidden = _allScanners.Count - visible.Count;
+        if (_allScanners.Count == 0)
+            ScannerHint.Text = "No scanner found. Switch the printer on, connect it by USB or Wi-Fi, then press refresh.";
+        else if (visible.Count == 0)
+            ScannerHint.Text = "All scanners are removed from the list. Press the gear button to add one back.";
+        else if (visible.Count > 1 && _settings.DefaultScannerId == null)
+            ScannerHint.Text = "Your printer may show up twice (USB/network). Use the gear button to pick a default or remove the extra one.";
+        else if (hidden > 0)
+            ScannerHint.Text = $"{hidden} scanner(s) hidden. Use the gear button to show them.";
+        else ScannerHint.Text = "";
+        ScannerHint.Visibility = ScannerHint.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
     async void Refresh_Click(object sender, RoutedEventArgs e) => await RefreshScannersAsync();
+
+    void Manage_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new ScannerManagerWindow(_allScanners, _settings.DefaultScannerId, _settings.HiddenScannerIds) { Owner = this };
+        if (dlg.ShowDialog() != true) return;
+
+        // Keep hidden ids of scanners that are offline right now; update the ones shown in the dialog.
+        var shown = dlg.ShownIds.ToHashSet();
+        _settings.HiddenScannerIds = _settings.HiddenScannerIds.Where(id => !shown.Contains(id)).Union(dlg.HiddenIds).ToList();
+        _settings.DefaultScannerId = dlg.DefaultId
+            ?? (_allScanners.Any(s => s.DeviceId == _settings.DefaultScannerId) ? null : _settings.DefaultScannerId);
+        _settings.Save();
+        ApplyScannerList(keepSelection: true);
+    }
 
     // ---------- Scanning ----------
 
     async void Scan_Click(object sender, RoutedEventArgs e)
     {
         if (_busy) return;
-        if (ScannerBox.SelectedItem is not ScannerInfo scanner)
+        if (SelectedScanner is not { } scanner)
         {
             MessageBox.Show(this, "No scanner selected. Make sure the printer is on and press the refresh button.",
                 "ScanDesk", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -701,6 +740,7 @@ public partial class MainWindow : Window
 
         ScanButton.IsEnabled = !_busy;
         RefreshButton.IsEnabled = !_busy;
+        ManageButton.IsEnabled = !_busy;
         ImportButton.IsEnabled = !_busy;
         SaveButton.IsEnabled = !_busy && hasPages;
         ClearButton.IsEnabled = !_busy && hasPages;
@@ -716,7 +756,7 @@ public partial class MainWindow : Window
 
     void SaveSettings()
     {
-        if (ScannerBox.SelectedItem is ScannerInfo s) _settings.ScannerId = s.DeviceId;
+        if (SelectedScanner is { } s) _settings.ScannerId = s.DeviceId;
         if (TagOf(ColorBox) is { } c) _settings.Color = Enum.Parse<ColorMode>(c);
         if (TagOf(DpiBox) is { } d) _settings.Dpi = int.Parse(d);
         if (TagOf(AreaBox) is { } a) _settings.Area = Enum.Parse<ScanArea>(a);

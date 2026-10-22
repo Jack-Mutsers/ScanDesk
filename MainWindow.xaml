@@ -56,10 +56,13 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <ComboBox x:Name="ScannerBox"/>
                             <Button Grid.Column="1" x:Name="RefreshButton" Style="{StaticResource IconButton}" Margin="6,0,0,0"
                                     Content="&#xE72C;" ToolTip="Search for scanners again" Click="Refresh_Click"/>
+                            <Button Grid.Column="2" x:Name="ManageButton" Style="{StaticResource IconButton}" Margin="6,0,0,0"
+                                    Content="&#xE713;" ToolTip="Manage scanners: choose a default, remove scanners from the list" Click="Manage_Click"/>
                         </Grid>
                         <TextBlock x:Name="ScannerHint" Foreground="{StaticResource MutedBrush}" FontSize="11.5" TextWrapping="Wrap"
                                    Margin="0,5,0,0" Visibility="Collapsed"/>
