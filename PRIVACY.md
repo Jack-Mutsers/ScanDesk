@@ -14,7 +14,7 @@ ScanDesk works entirely on your own PC. It has no accounts, no advertising and n
 
 | When | Where | What is sent |
 |---|---|---|
-| At startup, if *Check for updates automatically* is on (default) | `api.github.com` | A request for the latest ScanDesk release. Like every website, GitHub receives your IP address and the program name `ScanDesk-Updater`. Nothing about you or your scans is sent. |
+| At startup and every 2 hours while ScanDesk is open, if *Check for updates automatically* is on (default) | `api.github.com` | A request for the latest ScanDesk release. Like every website, GitHub receives your IP address and the program name `ScanDesk-Updater`. Nothing about you or your scans is sent. |
 | When you click *Check for updates* | `api.github.com` | The same request as above. |
 | When you click *Install update* | `github.com` | The installer download. |
 | When you click *What's new* | your web browser opens `github.com` | Normal web browsing. |
@@ -35,7 +35,7 @@ ScanDesk werkt volledig op je eigen pc. Er zijn geen accounts, geen advertenties
 
 | Wanneer | Waarheen | Wat wordt verstuurd |
 |---|---|---|
-| Bij het starten, als *Bij het starten automatisch op updates controleren* aan staat (standaard) | `api.github.com` | Een vraag naar de nieuwste versie van ScanDesk. Zoals bij elke website ontvangt GitHub je IP-adres en de programmanaam `ScanDesk-Updater`. Er wordt niets over jou of je scans verstuurd. |
+| Bij het starten en elke 2 uur zolang ScanDesk open is, als *Bij het starten automatisch op updates controleren* aan staat (standaard) | `api.github.com` | Een vraag naar de nieuwste versie van ScanDesk. Zoals bij elke website ontvangt GitHub je IP-adres en de programmanaam `ScanDesk-Updater`. Er wordt niets over jou of je scans verstuurd. |
 | Als je op *Controleren op updates* klikt | `api.github.com` | Dezelfde vraag als hierboven. |
 | Als je op *Update installeren* klikt | `github.com` | Het downloaden van het installatieprogramma. |
 | Als je op *Wat is er nieuw* klikt | je webbrowser opent `github.com` | Gewoon surfen. |

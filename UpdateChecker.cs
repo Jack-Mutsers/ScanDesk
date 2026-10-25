@@ -36,6 +36,12 @@ public static class UpdateChecker
     public static Version? CurrentVersion { get; } =
         Version.TryParse(CurrentVersionText, out var v) && v > new Version(0, 0, 0) ? v : null;
 
+    /// <summary>"Versie 1.0.5", "Testversie 1.0.5-test.3" or "Ontwikkelversie" in the current language.</summary>
+    public static string VersionLabel() =>
+        CurrentVersion != null ? Loc.F("Version", CurrentVersionText)
+        : CurrentVersionText.Contains("-test") ? Loc.F("TestBuild", CurrentVersionText)
+        : Loc.T("DevBuild");
+
     /// <summary>Returns the latest release if it's newer than the running version, otherwise null.</summary>
     public static async Task<UpdateInfo?> CheckAsync(CancellationToken ct = default)
     {

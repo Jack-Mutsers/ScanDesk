@@ -25,6 +25,7 @@ public partial class MainWindow : Window, ISettingsHost
     public MainWindow()
     {
         InitializeComponent();
+        RefreshWindowTitle();
         PageList.ItemsSource = _pages;
         _pages.CollectionChanged += (_, _) => { Renumber(); UpdateUi(); };
 
@@ -43,8 +44,8 @@ public partial class MainWindow : Window, ISettingsHost
             // Image files passed on the command line (e.g. "Open with ScanDesk") are added as pages.
             var files = Environment.GetCommandLineArgs().Skip(1).Where(File.Exists).ToList();
             if (files.Count > 0) await ImportAsync(files);
+            _ = AutoCheckForUpdatesAsync();
             await RefreshScannersAsync();
-            await CheckForUpdatesAsync(manual: false);
         };
         UpdateUi();
     }
@@ -465,6 +466,7 @@ public partial class MainWindow : Window, ISettingsHost
             box.SelectedIndex = -1;
             box.SelectedIndex = i;
         }
+        RefreshWindowTitle();
         ApplyScannerList(keepSelection: true);
         UpdateUi();
         ShowPreview();
@@ -478,6 +480,8 @@ public partial class MainWindow : Window, ISettingsHost
     {
         _settings.AutoCheckUpdates = on;
         _settings.Save();
+        if (on) _ = AutoCheckForUpdatesAsync();
+        else _updateTimer?.Stop();
     }
 
     public async Task<string> CheckForUpdatesNowAsync() => await CheckForUpdatesAsync(manual: true) ?? "";
@@ -496,6 +500,37 @@ public partial class MainWindow : Window, ISettingsHost
     // ---------- Updates ----------
 
     UpdateInfo? _update;
+    Version? _dismissedVersion;   // "Later" was clicked for this version
+    bool _lastCheckFailed;
+    System.Windows.Threading.DispatcherTimer? _updateTimer;
+
+    static readonly TimeSpan RecheckInterval = TimeSpan.FromHours(2);
+    static readonly TimeSpan RetryInterval = TimeSpan.FromMinutes(5);
+
+    /// <summary>
+    /// Checks at startup and then every 2 hours while ScanDesk is open (after 5 minutes if there was no
+    /// connection), so a release published while the app is running is still offered.
+    /// </summary>
+    async Task AutoCheckForUpdatesAsync()
+    {
+        _updateTimer?.Stop();
+        await CheckForUpdatesAsync(manual: false);
+        if (UpdateChecker.CurrentVersion == null) return; // local and test builds don't auto-update
+        _updateTimer ??= CreateUpdateTimer();
+        _updateTimer.Interval = _lastCheckFailed ? RetryInterval : RecheckInterval;
+        _updateTimer.Start();
+    }
+
+    System.Windows.Threading.DispatcherTimer CreateUpdateTimer()
+    {
+        var timer = new System.Windows.Threading.DispatcherTimer();
+        timer.Tick += async (_, _) => await AutoCheckForUpdatesAsync();
+        return timer;
+    }
+
+    void RefreshWindowTitle() => Title = UpdateChecker.CurrentVersion != null
+        ? $"ScanDesk {UpdateChecker.CurrentVersionText}"
+        : $"ScanDesk – {UpdateChecker.VersionLabel()}";
 
     /// <summary>Looks for a newer release on GitHub. Automatic checks stay silent when offline or up to date.</summary>
     /// <returns>For manual checks, the result to show the user.</returns>
@@ -504,18 +539,23 @@ public partial class MainWindow : Window, ISettingsHost
         if (!manual && (UpdateChecker.CurrentVersion == null || !_settings.AutoCheckUpdates)) return null; // local builds don't nag
         if (manual) SetStatus(Loc.T("Status.CheckingUpdates"));
         string? result = null;
+        _lastCheckFailed = false;
         try
         {
             var update = await UpdateChecker.CheckAsync();
             if (update != null)
             {
-                ShowUpdate(update);
+                // Automatic checks don't bring back a version the user postponed, or interrupt a running update.
+                bool postponed = !manual && _dismissedVersion != null && update.Version <= _dismissedVersion;
+                bool installing = UpdateBanner.Visibility == Visibility.Visible && !UpdateButtons.IsEnabled;
+                if (!postponed && !installing) ShowUpdate(update);
                 result = Loc.F("Update.Available", update.Version);
             }
             else if (manual) result = Loc.F("Status.UpToDate", UpdateChecker.CurrentVersionText);
         }
         catch (Exception ex)
         {
+            _lastCheckFailed = true;
             if (manual) result = Loc.F("Status.UpdateCheckFailed", ex.Message);
         }
         if (manual && result != null) SetStatus(result);
@@ -536,7 +576,11 @@ public partial class MainWindow : Window, ISettingsHost
         UpdateBanner.Visibility = Visibility.Visible;
     }
 
-    void UpdateLater_Click(object sender, RoutedEventArgs e) => UpdateBanner.Visibility = Visibility.Collapsed;
+    void UpdateLater_Click(object sender, RoutedEventArgs e)
+    {
+        _dismissedVersion = _update?.Version;
+        UpdateBanner.Visibility = Visibility.Collapsed;
+    }
 
     void UpdateNotes_Click(object sender, RoutedEventArgs e)
     {
