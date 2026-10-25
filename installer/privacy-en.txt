@@ -6,7 +6,7 @@ ScanDesk works entirely on your own PC. It has no accounts, no advertising and n
 
 - Your scans stay on your PC. Temporary pages are deleted when you close ScanDesk; saved files go only to the folder you choose.
 - ScanDesk only connects to the internet for updates: at startup it asks GitHub (api.github.com) whether a new version exists, and when you click "Install update" yourself, the installer is downloaded from github.com. Like every website, GitHub receives your IP address. Nothing about you or your scans is sent.
-- To turn this off: untick "Check for updates automatically at startup" in the bottom-left corner of ScanDesk.
+- To turn this off: in ScanDesk go to Tools > Settings and untick "Check for updates automatically at startup".
 
 Full privacy statement:
 https://github.com/Jack-Mutsers/ScanDesk/blob/main/PRIVACY.md

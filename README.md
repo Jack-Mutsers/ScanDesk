@@ -9,9 +9,10 @@ A simple Windows 11 scanner app: scan several pages from any WIA scanner (Epson,
 - Image correction like Epson Scan 2: deep blacks, white paper, sharper text (Document / Photo / Off)
 - Straightens crooked pages automatically
 - Crop, rotate, reorder and delete pages, with undo
-- Fit to page: enlarge an A5 scan or a cropped part to fill an A4 or Letter sheet, with sharp high-quality resizing instead of blurry stretching
+- Fit to format: enlarge or shrink a page (an A5 scan, a cropped part, a photo) to A3, A4, A5, A6, Letter, Legal or 10 × 15 cm, with sharp high-quality resizing instead of blurry stretching
 - Add existing images by dragging them into the window
-- Dutch (default) and English; switch in the bottom-left corner
+- Menu bar with keyboard shortcuts, and a Settings window (language, automatic updates, scanners)
+- Dutch (default) and English
 
 ## Branches and testing
 
@@ -22,7 +23,7 @@ A simple Windows 11 scanner app: scan several pages from any WIA scanner (Epson,
 
 Get the latest `ScanDesk-Setup-x.y.z.exe` from [Releases](https://github.com/Jack-Mutsers/ScanDesk/releases). It includes everything it needs; no separate .NET install required.
 
-From version 1.0.3 on, ScanDesk checks for new releases when it starts (or via **Check for updates** in the bottom-left corner). **Install update** downloads the installer, verifies its SHA-256 checksum against the one GitHub publishes, installs it silently and reopens ScanDesk.
+From version 1.0.3 on, ScanDesk checks for new releases when it starts (or via **Help → Check for updates**). **Install update** downloads the installer, verifies its SHA-256 checksum against the one GitHub publishes, installs it silently and reopens ScanDesk.
 
 ## Building
 
@@ -39,7 +40,7 @@ Every push to `main` builds the installer and publishes it as a GitHub release. 
 
 ## Privacy
 
-ScanDesk works entirely on your own PC: no accounts, no advertising, no usage tracking, and your scans never leave your computer. Its only internet connection is to GitHub, to check for and download updates, and the automatic check can be turned off in the bottom-left corner of the app. See [PRIVACY.md](PRIVACY.md) for the details.
+ScanDesk works entirely on your own PC: no accounts, no advertising, no usage tracking, and your scans never leave your computer. Its only internet connection is to GitHub, to check for and download updates, and the automatic check can be turned off under **Extra → Settings**. See [PRIVACY.md](PRIVACY.md) for the details.
 
 ## Code signing policy
 

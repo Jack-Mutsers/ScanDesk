@@ -28,9 +28,6 @@
     <sys:String x:Key="Correction.Document">Document – scherpe tekst, wit papier</sys:String>
     <sys:String x:Key="Correction.Photo">Foto – natuurlijke kleuren</sys:String>
     <sys:String x:Key="Correction.Off">Uit – onbewerkte scan</sys:String>
-    <sys:String x:Key="Label.Rotate">DRAAIEN</sys:String>
-    <sys:String x:Key="Rotate.90">90° met de klok mee</sys:String>
-    <sys:String x:Key="Rotate.270">90° tegen de klok in</sys:String>
     <sys:String x:Key="Deskew">Scheve pagina's automatisch rechtzetten</sys:String>
     <sys:String x:Key="Advanced">Geavanceerd</sys:String>
     <sys:String x:Key="Brightness">Helderheid</sys:String>
@@ -67,10 +64,8 @@
     <sys:String x:Key="Update.Approve">Geef toestemming in de Windows-melding. ScanDesk sluit en start opnieuw zodra de update klaar is.</sys:String>
     <sys:String x:Key="Undo">Ongedaan maken</sys:String>
     <sys:String x:Key="Undo.Tooltip">De laatste bijsnijding of draaiing van deze pagina ongedaan maken (Ctrl+Z)</sys:String>
-    <sys:String x:Key="Fit.Button">Passend maken</sys:String>
-    <sys:String x:Key="Fit.Tooltip">Vergroot de pagina tot een volledig vel, met scherpe vergroting van hoge kwaliteit</sys:String>
-    <sys:String x:Key="Fit.A4">Passend maken voor A4 (210 × 297 mm)</sys:String>
-    <sys:String x:Key="Fit.Letter">Passend maken voor Letter (8,5 × 11 inch)</sys:String>
+    <sys:String x:Key="Fit.Button">Op formaat</sys:String>
+    <sys:String x:Key="Fit.Tooltip">De pagina vergroten of verkleinen tot een papierformaat (A4, A5, …), scherp en zonder uitrekken</sys:String>
     <sys:String x:Key="Crop">Bijsnijden</sys:String>
     <sys:String x:Key="Crop.Tooltip">Kies welk deel van deze pagina je wilt houden</sys:String>
     <sys:String x:Key="Crop.Apply">Bijsnijden</sys:String>
@@ -157,7 +152,6 @@
     <sys:String x:Key="Msg.CloseUnsaved">Je hebt {0} gescande pagina('s) die niet zijn opgeslagen. Toch afsluiten?</sys:String>
 
     <!-- Scanners beheren -->
-    <sys:String x:Key="Manage.Title">Scanners beheren</sys:String>
     <sys:String x:Key="Manage.Intro">De standaardscanner wordt automatisch gekozen als ScanDesk start. Verwijderde scanners blijven verborgen tot je ze terugzet; er verandert niets in Windows.</sys:String>
     <sys:String x:Key="Manage.Empty">Geen scanners gevonden. Zet de printer aan en klik in het hoofdvenster op vernieuwen.</sys:String>
     <sys:String x:Key="Manage.Default">Standaard</sys:String>
@@ -167,7 +161,6 @@
     <sys:String x:Key="Manage.AddBackTooltip">Deze scanner weer tonen in de scannerlijst</sys:String>
     <sys:String x:Key="Manage.DriverWindows">Ingebouwde Windows-driver (netwerk)</sys:String>
     <sys:String x:Key="Manage.DriverVendor">Driver van de fabrikant</sys:String>
-    <sys:String x:Key="Done">Gereed</sys:String>
 
     <!-- Foutmeldingen -->
     <sys:String x:Key="Err.NoWia">Windows Image Acquisition (WIA) is niet beschikbaar op deze pc.</sys:String>
@@ -182,4 +175,38 @@
     <sys:String x:Key="Err.Generic">De scanner meldt een fout ({0}): {1}</sys:String>
     <sys:String x:Key="Err.DownloadIncomplete">De download is onvolledig. Probeer het opnieuw.</sys:String>
     <sys:String x:Key="Err.Checksum">Het gedownloade installatieprogramma kwam niet door de veiligheidscontrole (controlesom klopt niet) en is daarom niet uitgevoerd.</sys:String>
+
+    <!-- Menu, settings, rotate and formats -->
+    <sys:String x:Key="Menu.File">_Bestand</sys:String>
+    <sys:String x:Key="Menu.Exit">Afsluiten</sys:String>
+    <sys:String x:Key="Menu.Scanner">_Scanner</sys:String>
+    <sys:String x:Key="Menu.ManageScanners">Scanners beheren…</sys:String>
+    <sys:String x:Key="Menu.Page">_Pagina</sys:String>
+    <sys:String x:Key="Menu.DeletePage">Pagina verwijderen</sys:String>
+    <sys:String x:Key="Menu.Tools">E_xtra</sys:String>
+    <sys:String x:Key="Menu.Settings">Instellingen…</sys:String>
+    <sys:String x:Key="Menu.Help">_Help</sys:String>
+    <sys:String x:Key="Menu.Privacy">Privacyverklaring</sys:String>
+    <sys:String x:Key="Menu.About">Over ScanDesk</sys:String>
+    <sys:String x:Key="Rotate.Button">Draaien</sys:String>
+    <sys:String x:Key="Rotate.Tooltip">De geselecteerde pagina('s) draaien</sys:String>
+    <sys:String x:Key="Rotate180">180° draaien</sys:String>
+    <sys:String x:Key="Area.A3">A3 (297 × 420 mm)</sys:String>
+    <sys:String x:Key="Area.A6">A6 (105 × 148 mm)</sys:String>
+    <sys:String x:Key="Area.Legal">Legal (8,5 × 14 inch)</sys:String>
+    <sys:String x:Key="Import.Short">Afbeeldingen toevoegen…</sys:String>
+    <sys:String x:Key="Settings.Title">Instellingen</sys:String>
+    <sys:String x:Key="Settings.General">Algemeen</sys:String>
+    <sys:String x:Key="Settings.Scanners">Scanners</sys:String>
+    <sys:String x:Key="Settings.LanguageHint">De taal verandert meteen in het hele programma.</sys:String>
+    <sys:String x:Key="Settings.Updates">Updates</sys:String>
+    <sys:String x:Key="Settings.CheckNow">Nu controleren</sys:String>
+    <sys:String x:Key="Settings.Close">Sluiten</sys:String>
+    <sys:String x:Key="Settings.Search">Opnieuw zoeken</sys:String>
+    <sys:String x:Key="Settings.AddInWindows">Scanner toevoegen in Windows…</sys:String>
+    <sys:String x:Key="Settings.AddInWindowsHint">Nieuwe scanners installeer je via Windows (Instellingen &gt; Printers en scanners). Klik daarna op Opnieuw zoeken.</sys:String>
+    <sys:String x:Key="About.License">Gratis en opensource onder de GNU GPL-3.0-licentie.</sys:String>
+    <sys:String x:Key="About.Website">Website (GitHub)</sys:String>
+    <sys:String x:Key="About.Releases">Alle versies</sys:String>
+    <sys:String x:Key="About.LicenseLink">Licentie</sys:String>
 </ResourceDictionary>

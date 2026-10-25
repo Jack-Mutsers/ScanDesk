@@ -15,7 +15,6 @@ public sealed class AppSettings
     public ScanArea Area { get; set; } = ScanArea.A4;
     public int Quality { get; set; } = 85;
     public EnhanceMode Enhance { get; set; } = EnhanceMode.Document;
-    public int Rotation { get; set; }
     public int Brightness { get; set; }
     public int Contrast { get; set; }
     public bool Deskew { get; set; } = true;

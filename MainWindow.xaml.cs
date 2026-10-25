@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 namespace ScanDesk;
 
-public partial class MainWindow : Window
+public partial class MainWindow : Window, ISettingsHost
 {
     readonly ObservableCollection<ScannedPage> _pages = [];
     readonly AppSettings _settings = AppSettings.Load();
@@ -26,10 +26,6 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         PageList.ItemsSource = _pages;
-        foreach (var (code, name) in Loc.Languages) LanguageBox.Items.Add(new ComboBoxItem { Content = name, Tag = code });
-        SelectByTag(LanguageBox, Loc.Language);
-        AutoUpdateBox.IsChecked = _settings.AutoCheckUpdates;
-        UpdateVersionText();
         _pages.CollectionChanged += (_, _) => { Renumber(); UpdateUi(); };
 
         SelectByTag(ColorBox, _settings.Color.ToString());
@@ -37,7 +33,6 @@ public partial class MainWindow : Window
         SelectByTag(AreaBox, _settings.Area.ToString());
         SelectByTag(QualityBox, _settings.Quality.ToString());
         SelectByTag(EnhanceBox, _settings.Enhance.ToString());
-        SelectByTag(RotateBox, _settings.Rotation.ToString());
         BrightnessSlider.Value = _settings.Brightness;
         ContrastSlider.Value = _settings.Contrast;
         DeskewBox.IsChecked = _settings.Deskew;
@@ -66,7 +61,7 @@ public partial class MainWindow : Window
 
     ScannerInfo? SelectedScanner => (ScannerBox.SelectedItem as ScannerChoice)?.Info;
 
-    async Task RefreshScannersAsync()
+    public async Task RefreshScannersAsync()
     {
         SetBusy(true, Loc.T("Busy.FindScanners"));
         try
@@ -112,19 +107,7 @@ public partial class MainWindow : Window
 
     async void Refresh_Click(object sender, RoutedEventArgs e) => await RefreshScannersAsync();
 
-    void Manage_Click(object sender, RoutedEventArgs e)
-    {
-        var dlg = new ScannerManagerWindow(_allScanners, _settings.DefaultScannerId, _settings.HiddenScannerIds) { Owner = this };
-        if (dlg.ShowDialog() != true) return;
-
-        // Keep hidden ids of scanners that are offline right now; update the ones shown in the dialog.
-        var shown = dlg.ShownIds.ToHashSet();
-        _settings.HiddenScannerIds = _settings.HiddenScannerIds.Where(id => !shown.Contains(id)).Union(dlg.HiddenIds).ToList();
-        _settings.DefaultScannerId = dlg.DefaultId
-            ?? (_allScanners.Any(s => s.DeviceId == _settings.DefaultScannerId) ? null : _settings.DefaultScannerId);
-        _settings.Save();
-        ApplyScannerList(keepSelection: true);
-    }
+    void Manage_Click(object sender, RoutedEventArgs e) => OpenSettings(SettingsPage.Scanners);
 
     // ---------- Scanning ----------
 
@@ -145,7 +128,7 @@ public partial class MainWindow : Window
         var enhance = new EnhanceOptions(
             Enum.Parse<EnhanceMode>(TagOf(EnhanceBox) ?? "Document"),
             (int)BrightnessSlider.Value, (int)ContrastSlider.Value,
-            int.Parse(TagOf(RotateBox) ?? "0"),
+            0, // pages are rotated afterwards with the Rotate button / Page menu
             DeskewBox.IsChecked == true);
         SaveSettings();
 
@@ -273,6 +256,7 @@ public partial class MainWindow : Window
 
     async void RotateLeft_Click(object sender, RoutedEventArgs e) => await RotateAsync(-90);
     async void RotateRight_Click(object sender, RoutedEventArgs e) => await RotateAsync(90);
+    async void Rotate180_Click(object sender, RoutedEventArgs e) => await RotateAsync(180);
 
     void Delete_Click(object sender, RoutedEventArgs e) => DeleteSelected();
 
@@ -449,21 +433,38 @@ public partial class MainWindow : Window
 
     // ---------- Language ----------
 
-    void Language_Changed(object sender, SelectionChangedEventArgs e)
+    // ---------- Settings window ----------
+
+    public AppSettings Settings => _settings;
+    public IReadOnlyList<ScannerInfo> Scanners => _allScanners;
+
+    void OpenSettings(SettingsPage page)
     {
-        if (TagOf(LanguageBox) is not { } code || code == Loc.Language) return;
+        if (_busy) return;
+        new SettingsWindow(this, page) { Owner = this }.ShowDialog();
+    }
+
+    void Settings_Click(object sender, RoutedEventArgs e) => OpenSettings(SettingsPage.General);
+    void About_Click(object sender, RoutedEventArgs e) => OpenSettings(SettingsPage.About);
+    void Exit_Click(object sender, RoutedEventArgs e) => Close();
+    void Releases_Click(object sender, RoutedEventArgs e) => UpdateChecker.OpenInBrowser(UpdateChecker.ReleasesUrl);
+    void Privacy_Click(object sender, RoutedEventArgs e) =>
+        UpdateChecker.OpenInBrowser("https://github.com/Jack-Mutsers/ScanDesk/blob/main/PRIVACY.md");
+
+    public void SetLanguage(string code)
+    {
+        if (code == Loc.Language) return;
         Loc.Apply(code);
         _settings.Language = code;
         _settings.Save();
 
         // Combo boxes keep showing the old text of their selected item until it is re-selected.
-        foreach (var box in new[] { ColorBox, DpiBox, AreaBox, EnhanceBox, RotateBox, QualityBox })
+        foreach (var box in new[] { ColorBox, DpiBox, AreaBox, EnhanceBox, QualityBox })
         {
             int i = box.SelectedIndex;
             box.SelectedIndex = -1;
             box.SelectedIndex = i;
         }
-        UpdateVersionText();
         ApplyScannerList(keepSelection: true);
         UpdateUi();
         ShowPreview();
@@ -472,42 +473,56 @@ public partial class MainWindow : Window
         SetStatus(Loc.T("Ready"));
     }
 
-    void UpdateVersionText() => VersionRun.Text =
-        UpdateChecker.CurrentVersion != null ? Loc.F("Version", UpdateChecker.CurrentVersionText)
-        : UpdateChecker.CurrentVersionText.Contains("-test") ? Loc.F("TestBuild", UpdateChecker.CurrentVersionText)
-        : Loc.T("DevBuild");
+    /// <summary>Lets people turn off the startup check, the only time ScanDesk contacts the internet on its own.</summary>
+    public void SetAutoUpdate(bool on)
+    {
+        _settings.AutoCheckUpdates = on;
+        _settings.Save();
+    }
+
+    public async Task<string> CheckForUpdatesNowAsync() => await CheckForUpdatesAsync(manual: true) ?? "";
+
+    public void SetScannerVisibility(string? defaultId, IEnumerable<string> hiddenIds, IEnumerable<string> shownIds)
+    {
+        // Keep hidden ids of scanners that are offline right now; update the ones shown in Settings.
+        var shown = shownIds.ToHashSet();
+        _settings.HiddenScannerIds = _settings.HiddenScannerIds.Where(id => !shown.Contains(id)).Union(hiddenIds).ToList();
+        _settings.DefaultScannerId = defaultId
+            ?? (_allScanners.Any(sc => sc.DeviceId == _settings.DefaultScannerId) ? null : _settings.DefaultScannerId);
+        _settings.Save();
+        ApplyScannerList(keepSelection: true);
+    }
 
     // ---------- Updates ----------
 
     UpdateInfo? _update;
 
     /// <summary>Looks for a newer release on GitHub. Automatic checks stay silent when offline or up to date.</summary>
-    async Task CheckForUpdatesAsync(bool manual)
+    /// <returns>For manual checks, the result to show the user.</returns>
+    async Task<string?> CheckForUpdatesAsync(bool manual)
     {
-        if (!manual && (UpdateChecker.CurrentVersion == null || !_settings.AutoCheckUpdates)) return; // local builds don't nag
+        if (!manual && (UpdateChecker.CurrentVersion == null || !_settings.AutoCheckUpdates)) return null; // local builds don't nag
         if (manual) SetStatus(Loc.T("Status.CheckingUpdates"));
+        string? result = null;
         try
         {
             var update = await UpdateChecker.CheckAsync();
-            if (update != null) ShowUpdate(update);
-            else if (manual) SetStatus(Loc.F("Status.UpToDate", UpdateChecker.CurrentVersionText));
+            if (update != null)
+            {
+                ShowUpdate(update);
+                result = Loc.F("Update.Available", update.Version);
+            }
+            else if (manual) result = Loc.F("Status.UpToDate", UpdateChecker.CurrentVersionText);
         }
         catch (Exception ex)
         {
-            if (manual) SetStatus(Loc.F("Status.UpdateCheckFailed", ex.Message));
+            if (manual) result = Loc.F("Status.UpdateCheckFailed", ex.Message);
         }
+        if (manual && result != null) SetStatus(result);
+        return result;
     }
 
     async void CheckUpdates_Click(object sender, RoutedEventArgs e) => await CheckForUpdatesAsync(manual: true);
-
-    /// <summary>Lets people turn off the startup check, the only time ScanDesk contacts the internet on its own.</summary>
-    void AutoUpdate_Changed(object sender, RoutedEventArgs e)
-    {
-        bool on = AutoUpdateBox.IsChecked == true;
-        if (on == _settings.AutoCheckUpdates) return;
-        _settings.AutoCheckUpdates = on;
-        _settings.Save();
-    }
 
     void ShowUpdate(UpdateInfo update)
     {
@@ -569,10 +584,11 @@ public partial class MainWindow : Window
 
     // ---------- Fit to page ----------
 
-    void Fit_Click(object sender, RoutedEventArgs e)
+    /// <summary>Opens a button's drop-down menu (Rotate, Fit to format) below it.</summary>
+    void DropDown_Click(object sender, RoutedEventArgs e)
     {
-        if (FitButton.ContextMenu is not { } menu) return;
-        menu.PlacementTarget = FitButton;
+        if (sender is not Button { ContextMenu: { } menu } button) return;
+        menu.PlacementTarget = button;
         menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
         menu.IsOpen = true;
     }
@@ -629,9 +645,23 @@ public partial class MainWindow : Window
             if (e.Key == Key.Escape) { EndCropMode(); e.Handled = true; }
             else if (e.Key == Key.Enter && _cropSel != null) { _ = ApplyCropAsync(); e.Handled = true; }
         }
-        else if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
+        else if (Keyboard.Modifiers == ModifierKeys.Control)
         {
-            UndoPage();
+            switch (e.Key)
+            {
+                case Key.Z: UndoPage(); break;
+                case Key.O: Import_Click(this, e); break;
+                case Key.Enter: Scan_Click(this, e); break;
+                case Key.L: RotateLeft_Click(this, e); break;
+                case Key.R: RotateRight_Click(this, e); break;
+                case Key.OemComma: OpenSettings(SettingsPage.General); break;
+                default: return;
+            }
+            e.Handled = true;
+        }
+        else if (e.Key == Key.F5 && Keyboard.Modifiers == ModifierKeys.None)
+        {
+            Refresh_Click(this, e);
             e.Handled = true;
         }
     }
@@ -914,8 +944,16 @@ public partial class MainWindow : Window
         var preview = PreviewPage;
         CropButton.IsEnabled = !_busy && preview != null;
         FitButton.IsEnabled = !_busy && preview != null;
+        RotateButton.IsEnabled = !_busy && hasSel;
         UndoButton.Visibility = preview?.CanUndo == true ? Visibility.Visible : Visibility.Collapsed;
         UndoButton.IsEnabled = !_busy;
+
+        // Menu bar
+        MainMenu.IsEnabled = !_busy;
+        MenuSave.IsEnabled = MenuClearAll.IsEnabled = hasPages;
+        foreach (var m in new[] { MenuRotateLeft, MenuRotateRight, MenuRotate180, MenuMoveUp, MenuMoveDown, MenuDelete }) m.IsEnabled = hasSel;
+        MenuCrop.IsEnabled = MenuFit.IsEnabled = preview != null;
+        MenuUndo.IsEnabled = preview?.CanUndo == true;
         if (!hasPages) { PreviewTitle.Text = Loc.T("Preview"); PreviewInfo.Text = ""; }
         else if (PageList.SelectedItem is ScannedPage p) PreviewTitle.Text = Loc.F("PageOf", p.Number, _pages.Count);
     }
@@ -928,7 +966,6 @@ public partial class MainWindow : Window
         if (TagOf(AreaBox) is { } a) _settings.Area = Enum.Parse<ScanArea>(a);
         if (TagOf(QualityBox) is { } q) _settings.Quality = int.Parse(q);
         if (TagOf(EnhanceBox) is { } en) _settings.Enhance = Enum.Parse<EnhanceMode>(en);
-        if (TagOf(RotateBox) is { } r) _settings.Rotation = int.Parse(r);
         _settings.Brightness = (int)BrightnessSlider.Value;
         _settings.Contrast = (int)ContrastSlider.Value;
         _settings.Deskew = DeskewBox.IsChecked == true;

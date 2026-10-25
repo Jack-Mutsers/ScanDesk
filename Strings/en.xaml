@@ -28,9 +28,6 @@
     <sys:String x:Key="Correction.Document">Document – sharp text, white paper</sys:String>
     <sys:String x:Key="Correction.Photo">Photo – natural colors</sys:String>
     <sys:String x:Key="Correction.Off">Off – raw scanner output</sys:String>
-    <sys:String x:Key="Label.Rotate">ROTATE</sys:String>
-    <sys:String x:Key="Rotate.90">90° clockwise</sys:String>
-    <sys:String x:Key="Rotate.270">90° counter-clockwise</sys:String>
     <sys:String x:Key="Deskew">Straighten crooked pages automatically</sys:String>
     <sys:String x:Key="Advanced">Advanced</sys:String>
     <sys:String x:Key="Brightness">Brightness</sys:String>
@@ -67,10 +64,8 @@
     <sys:String x:Key="Update.Approve">Approve the Windows prompt. ScanDesk closes and reopens when the update is done.</sys:String>
     <sys:String x:Key="Undo">Undo</sys:String>
     <sys:String x:Key="Undo.Tooltip">Undo the last crop or rotation of this page (Ctrl+Z)</sys:String>
-    <sys:String x:Key="Fit.Button">Fit to page</sys:String>
-    <sys:String x:Key="Fit.Tooltip">Enlarge the page to fill a full sheet, with sharp, high-quality resizing</sys:String>
-    <sys:String x:Key="Fit.A4">Fit to A4 (210 × 297 mm)</sys:String>
-    <sys:String x:Key="Fit.Letter">Fit to Letter (8.5 × 11 in)</sys:String>
+    <sys:String x:Key="Fit.Button">Fit to format</sys:String>
+    <sys:String x:Key="Fit.Tooltip">Enlarge or shrink the page to a paper format (A4, A5, …), sharp and without stretching</sys:String>
     <sys:String x:Key="Crop">Crop</sys:String>
     <sys:String x:Key="Crop.Tooltip">Select part of this page to keep</sys:String>
     <sys:String x:Key="Crop.Apply">Apply crop</sys:String>
@@ -157,7 +152,6 @@
     <sys:String x:Key="Msg.CloseUnsaved">You have {0} scanned page(s) that are not saved. Close anyway?</sys:String>
 
     <!-- Manage scanners -->
-    <sys:String x:Key="Manage.Title">Manage scanners</sys:String>
     <sys:String x:Key="Manage.Intro">The default scanner is selected automatically when ScanDesk starts. Removed scanners stay hidden from the list until you add them back; nothing changes in Windows.</sys:String>
     <sys:String x:Key="Manage.Empty">No scanners found. Switch the printer on and press refresh in the main window.</sys:String>
     <sys:String x:Key="Manage.Default">Default</sys:String>
@@ -167,7 +161,6 @@
     <sys:String x:Key="Manage.AddBackTooltip">Show this scanner in the scanner list again</sys:String>
     <sys:String x:Key="Manage.DriverWindows">Windows built-in driver (network)</sys:String>
     <sys:String x:Key="Manage.DriverVendor">Manufacturer's driver</sys:String>
-    <sys:String x:Key="Done">Done</sys:String>
 
     <!-- Errors -->
     <sys:String x:Key="Err.NoWia">Windows Image Acquisition (WIA) is not available on this PC.</sys:String>
@@ -182,4 +175,38 @@
     <sys:String x:Key="Err.Generic">The scanner reported an error ({0}): {1}</sys:String>
     <sys:String x:Key="Err.DownloadIncomplete">The download was incomplete. Please try again.</sys:String>
     <sys:String x:Key="Err.Checksum">The downloaded installer failed its safety check (checksum mismatch), so it was not run.</sys:String>
+
+    <!-- Menu, settings, rotate and formats -->
+    <sys:String x:Key="Menu.File">_File</sys:String>
+    <sys:String x:Key="Menu.Exit">Exit</sys:String>
+    <sys:String x:Key="Menu.Scanner">_Scanner</sys:String>
+    <sys:String x:Key="Menu.ManageScanners">Manage scanners…</sys:String>
+    <sys:String x:Key="Menu.Page">_Page</sys:String>
+    <sys:String x:Key="Menu.DeletePage">Delete page</sys:String>
+    <sys:String x:Key="Menu.Tools">_Tools</sys:String>
+    <sys:String x:Key="Menu.Settings">Settings…</sys:String>
+    <sys:String x:Key="Menu.Help">_Help</sys:String>
+    <sys:String x:Key="Menu.Privacy">Privacy statement</sys:String>
+    <sys:String x:Key="Menu.About">About ScanDesk</sys:String>
+    <sys:String x:Key="Rotate.Button">Rotate</sys:String>
+    <sys:String x:Key="Rotate.Tooltip">Rotate the selected page(s)</sys:String>
+    <sys:String x:Key="Rotate180">Rotate 180°</sys:String>
+    <sys:String x:Key="Area.A3">A3 (297 × 420 mm)</sys:String>
+    <sys:String x:Key="Area.A6">A6 (105 × 148 mm)</sys:String>
+    <sys:String x:Key="Area.Legal">Legal (8.5 × 14 in)</sys:String>
+    <sys:String x:Key="Import.Short">Add images…</sys:String>
+    <sys:String x:Key="Settings.Title">Settings</sys:String>
+    <sys:String x:Key="Settings.General">General</sys:String>
+    <sys:String x:Key="Settings.Scanners">Scanners</sys:String>
+    <sys:String x:Key="Settings.LanguageHint">The language changes immediately throughout the program.</sys:String>
+    <sys:String x:Key="Settings.Updates">Updates</sys:String>
+    <sys:String x:Key="Settings.CheckNow">Check now</sys:String>
+    <sys:String x:Key="Settings.Close">Close</sys:String>
+    <sys:String x:Key="Settings.Search">Search again</sys:String>
+    <sys:String x:Key="Settings.AddInWindows">Add a scanner in Windows…</sys:String>
+    <sys:String x:Key="Settings.AddInWindowsHint">New scanners are installed through Windows (Settings &gt; Printers &amp; scanners). Then click Search again.</sys:String>
+    <sys:String x:Key="About.License">Free and open source under the GNU GPL-3.0 license.</sys:String>
+    <sys:String x:Key="About.Website">Website (GitHub)</sys:String>
+    <sys:String x:Key="About.Releases">All releases</sys:String>
+    <sys:String x:Key="About.LicenseLink">License</sys:String>
 </ResourceDictionary>

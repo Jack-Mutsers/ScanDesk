@@ -13,6 +13,58 @@
         <CommandBinding Command="ApplicationCommands.Save" Executed="Save_Click"/>
     </Window.CommandBindings>
 
+    <DockPanel>
+        <Menu x:Name="MainMenu" DockPanel.Dock="Top" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1"
+              Padding="6,2" FontSize="13">
+            <MenuItem Header="{DynamicResource Menu.File}">
+                <MenuItem x:Name="MenuImport" Header="{DynamicResource Import.Button}" InputGestureText="Ctrl+O" Click="Import_Click"/>
+                <MenuItem x:Name="MenuSave" Header="{DynamicResource Save.Button}" InputGestureText="Ctrl+S" Click="Save_Click"/>
+                <Separator/>
+                <MenuItem x:Name="MenuClearAll" Header="{DynamicResource ClearAll}" Click="ClearAll_Click"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Menu.Exit}" InputGestureText="Alt+F4" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Menu.Scanner}">
+                <MenuItem x:Name="MenuScan" Header="{DynamicResource Scan.Page}" InputGestureText="Ctrl+Enter" Click="Scan_Click"/>
+                <MenuItem x:Name="MenuRefresh" Header="{DynamicResource Refresh.Tooltip}" InputGestureText="F5" Click="Refresh_Click"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Menu.ManageScanners}" Click="Manage_Click"/>
+            </MenuItem>
+            <MenuItem x:Name="MenuPage" Header="{DynamicResource Menu.Page}">
+                <MenuItem x:Name="MenuUndo" Header="{DynamicResource Undo}" InputGestureText="Ctrl+Z" Click="Undo_Click"/>
+                <Separator/>
+                <MenuItem x:Name="MenuRotateLeft" Header="{DynamicResource RotateLeft}" InputGestureText="Ctrl+L" Click="RotateLeft_Click"/>
+                <MenuItem x:Name="MenuRotateRight" Header="{DynamicResource RotateRight}" InputGestureText="Ctrl+R" Click="RotateRight_Click"/>
+                <MenuItem x:Name="MenuRotate180" Header="{DynamicResource Rotate180}" Click="Rotate180_Click"/>
+                <MenuItem x:Name="MenuCrop" Header="{DynamicResource Crop}" Click="Crop_Click"/>
+                <MenuItem x:Name="MenuFit" Header="{DynamicResource Fit.Button}">
+                    <MenuItem Header="{DynamicResource Area.A3}" Tag="A3" Click="FitPaper_Click"/>
+                    <MenuItem Header="{DynamicResource Area.A4}" Tag="A4" Click="FitPaper_Click"/>
+                    <MenuItem Header="{DynamicResource Area.A5}" Tag="A5" Click="FitPaper_Click"/>
+                    <MenuItem Header="{DynamicResource Area.A6}" Tag="A6" Click="FitPaper_Click"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource Area.Letter}" Tag="Letter" Click="FitPaper_Click"/>
+                    <MenuItem Header="{DynamicResource Area.Legal}" Tag="Legal" Click="FitPaper_Click"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource Area.Photo}" Tag="Photo10x15" Click="FitPaper_Click"/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem x:Name="MenuMoveUp" Header="{DynamicResource MoveUp}" Click="MoveUp_Click"/>
+                <MenuItem x:Name="MenuMoveDown" Header="{DynamicResource MoveDown}" Click="MoveDown_Click"/>
+                <MenuItem x:Name="MenuDelete" Header="{DynamicResource Menu.DeletePage}" InputGestureText="Del" Click="Delete_Click"/>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Menu.Tools}">
+                <MenuItem Header="{DynamicResource Menu.Settings}" InputGestureText="Ctrl+," Click="Settings_Click"/>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Menu.Help}">
+                <MenuItem Header="{DynamicResource CheckUpdates}" Click="CheckUpdates_Click"/>
+                <MenuItem Header="{DynamicResource Update.WhatsNew}" Click="Releases_Click"/>
+                <MenuItem Header="{DynamicResource Menu.Privacy}" Click="Privacy_Click"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Menu.About}" Click="About_Click"/>
+            </MenuItem>
+        </Menu>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
@@ -37,22 +89,6 @@
                             <TextBlock Text="{DynamicResource Save.Button}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <DockPanel Margin="0,12,0,0">
-                        <TextBlock Text="&#xE774;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource MutedBrush}"
-                                   VerticalAlignment="Center" Margin="0,0,8,0" ToolTip="{DynamicResource Language.Tooltip}"/>
-                        <ComboBox x:Name="LanguageBox" Height="28" Padding="8,0" ToolTip="{DynamicResource Language.Tooltip}"
-                                  SelectionChanged="Language_Changed"/>
-                    </DockPanel>
-                    <CheckBox x:Name="AutoUpdateBox" Margin="0,10,0,0" FontSize="11.5" Foreground="{StaticResource MutedBrush}"
-                              VerticalContentAlignment="Center" ToolTip="{DynamicResource AutoUpdate.Tooltip}"
-                              Checked="AutoUpdate_Changed" Unchecked="AutoUpdate_Changed">
-                        <TextBlock Text="{DynamicResource AutoUpdate}" TextWrapping="Wrap"/>
-                    </CheckBox>
-                    <TextBlock Margin="0,8,0,0" FontSize="11.5" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center">
-                        <Run x:Name="VersionRun" Text=""/>
-                        <Run Text=" · "/>
-                        <Hyperlink x:Name="CheckUpdatesLink" Click="CheckUpdates_Click" Foreground="{StaticResource AccentBrush}"><Run Text="{DynamicResource CheckUpdates}"/></Hyperlink>
-                    </TextBlock>
                 </StackPanel>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,-10,0">
                     <StackPanel Margin="0,0,10,0">
@@ -116,14 +152,6 @@
                             <ComboBoxItem Content="{DynamicResource Correction.Off}" Tag="Off"/>
                         </ComboBox>
 
-                        <TextBlock Text="{DynamicResource Label.Rotate}" Style="{StaticResource FieldLabel}"/>
-                        <ComboBox x:Name="RotateBox">
-                            <ComboBoxItem Content="0°" Tag="0"/>
-                            <ComboBoxItem Content="{DynamicResource Rotate.90}" Tag="90"/>
-                            <ComboBoxItem Content="180°" Tag="180"/>
-                            <ComboBoxItem Content="{DynamicResource Rotate.270}" Tag="270"/>
-                        </ComboBox>
-
                         <CheckBox x:Name="DeskewBox" Margin="0,12,0,0" VerticalContentAlignment="Center">
                             <TextBlock Text="{DynamicResource Deskew}" TextWrapping="Wrap"/>
                         </CheckBox>
@@ -154,12 +182,6 @@
                         <TextBlock Text="{DynamicResource Scan.Hint}"
                                    Foreground="{StaticResource MutedBrush}" FontSize="11.5" TextWrapping="Wrap" Margin="0,8,0,0"/>
 
-                        <Button Style="{StaticResource SoftButton}" Margin="0,16,0,0" Click="Import_Click" x:Name="ImportButton">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="&#xE8E5;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
-                                <TextBlock Text="{DynamicResource Import.Button}" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
                     </StackPanel>
                 </ScrollViewer>
             </DockPanel>
@@ -197,20 +219,36 @@
             <Grid Grid.Row="1" Margin="2,0,2,12" MinHeight="32">
                 <DockPanel x:Name="NormalHeader">
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                        <TextBlock x:Name="PreviewInfo" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="0,0,14,0"/>
-                        <Button x:Name="UndoButton" Style="{StaticResource SoftButton}" Height="32" Click="Undo_Click" Visibility="Collapsed"
-                                ToolTip="{DynamicResource Undo.Tooltip}">
+                        <Button x:Name="UndoButton" Style="{StaticResource IconButton}" Height="32" Width="32" Click="Undo_Click" Visibility="Collapsed"
+                                Content="&#xE7A7;" ToolTip="{DynamicResource Undo.Tooltip}"/>
+                        <Button x:Name="RotateButton" Style="{StaticResource SoftButton}" Height="32" Margin="8,0,0,0" Click="DropDown_Click"
+                                ToolTip="{DynamicResource Rotate.Tooltip}">
+                            <Button.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="{DynamicResource RotateLeft}" InputGestureText="Ctrl+L" Click="RotateLeft_Click"/>
+                                    <MenuItem Header="{DynamicResource RotateRight}" InputGestureText="Ctrl+R" Click="RotateRight_Click"/>
+                                    <MenuItem Header="{DynamicResource Rotate180}" Click="Rotate180_Click"/>
+                                </ContextMenu>
+                            </Button.ContextMenu>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="&#xE7A7;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
-                                <TextBlock Text="{DynamicResource Undo}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="&#xE7AD;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Rotate.Button}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="&#xE70D;" FontFamily="{StaticResource IconFont}" FontSize="9" Margin="6,1,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
-                        <Button x:Name="FitButton" Style="{StaticResource SoftButton}" Height="32" Margin="8,0,0,0" Click="Fit_Click"
+                        <Button x:Name="FitButton" Style="{StaticResource SoftButton}" Height="32" Margin="8,0,0,0" Click="DropDown_Click"
                                 ToolTip="{DynamicResource Fit.Tooltip}">
                             <Button.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="{DynamicResource Fit.A4}" Tag="A4" Click="FitPaper_Click"/>
-                                    <MenuItem Header="{DynamicResource Fit.Letter}" Tag="Letter" Click="FitPaper_Click"/>
+                                    <MenuItem Header="{DynamicResource Area.A3}" Tag="A3" Click="FitPaper_Click"/>
+                                    <MenuItem Header="{DynamicResource Area.A4}" Tag="A4" Click="FitPaper_Click"/>
+                                    <MenuItem Header="{DynamicResource Area.A5}" Tag="A5" Click="FitPaper_Click"/>
+                                    <MenuItem Header="{DynamicResource Area.A6}" Tag="A6" Click="FitPaper_Click"/>
+                                    <Separator/>
+                                    <MenuItem Header="{DynamicResource Area.Letter}" Tag="Letter" Click="FitPaper_Click"/>
+                                    <MenuItem Header="{DynamicResource Area.Legal}" Tag="Legal" Click="FitPaper_Click"/>
+                                    <Separator/>
+                                    <MenuItem Header="{DynamicResource Area.Photo}" Tag="Photo10x15" Click="FitPaper_Click"/>
                                 </ContextMenu>
                             </Button.ContextMenu>
                             <StackPanel Orientation="Horizontal">
@@ -227,7 +265,10 @@
                             </StackPanel>
                         </Button>
                     </StackPanel>
-                    <TextBlock x:Name="PreviewTitle" Text="{DynamicResource Preview}" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                        <TextBlock x:Name="PreviewTitle" Text="{DynamicResource Preview}" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock x:Name="PreviewInfo" Foreground="{StaticResource MutedBrush}" FontSize="11.5" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
                 </DockPanel>
                 <DockPanel x:Name="CropHeader" Visibility="Collapsed">
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
@@ -318,6 +359,13 @@
                     <Button Style="{StaticResource IconButton}" Content="&#xE74D;" ToolTip="{DynamicResource DeletePage}" Click="Delete_Click" x:Name="DeleteButton"
                             Foreground="#DC2626"/>
                 </UniformGrid>
+                <Button DockPanel.Dock="Bottom" Style="{StaticResource SoftButton}" Margin="0,8,0,0" Click="Import_Click" x:Name="ImportButton"
+                        ToolTip="{DynamicResource Import.Button}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE710;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Import.Short}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
 
                 <ListBox x:Name="PageList" BorderThickness="0" SelectionMode="Extended" HorizontalContentAlignment="Stretch"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="PageList_SelectionChanged"
@@ -364,4 +412,5 @@
             </DockPanel>
         </Border>
     </Grid>
+    </DockPanel>
 </Window>

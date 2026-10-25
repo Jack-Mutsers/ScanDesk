@@ -21,7 +21,7 @@ ScanDesk works entirely on your own PC. It has no accounts, no advertising and n
 
 GitHub's handling of this data is described in the [GitHub General Privacy Statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
 
-**Turning it off:** untick *Check for updates automatically at startup* in the bottom-left corner of ScanDesk. ScanDesk then never connects to the internet unless you click one of the update buttons yourself.
+**Turning it off:** go to **Tools → Settings → General** and untick *Check for updates automatically at startup*. ScanDesk then never connects to the internet unless you click one of the update buttons yourself.
 
 ## Nederlands
 
@@ -42,4 +42,4 @@ ScanDesk werkt volledig op je eigen pc. Er zijn geen accounts, geen advertenties
 
 Hoe GitHub met deze gegevens omgaat, staat in de [GitHub General Privacy Statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
 
-**Uitzetten:** haal linksonder in ScanDesk het vinkje weg bij *Bij het starten automatisch op updates controleren*. ScanDesk maakt dan nooit verbinding met internet, behalve als je zelf op een van de updateknoppen klikt.
+**Uitzetten:** ga naar **Extra → Instellingen → Algemeen** en haal het vinkje weg bij *Bij het starten automatisch op updates controleren*. ScanDesk maakt dan nooit verbinding met internet, behalve als je zelf op een van de updateknoppen klikt.
