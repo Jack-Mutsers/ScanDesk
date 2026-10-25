@@ -30,8 +30,9 @@ MinVersion=10.0.17763
 PrivilegesRequiredOverridesAllowed=dialog
 
 [Languages]
-Name: "english"; MessagesFile: "compiler:Default.isl"
+; Dutch first: it is used when Windows' own language isn't one of these.
 Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
+Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"

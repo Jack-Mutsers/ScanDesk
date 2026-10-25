@@ -1,0 +1,183 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- Main window: left panel -->
+    <sys:String x:Key="App.Subtitle">Scan to PDF or images</sys:String>
+    <sys:String x:Key="Label.Scanner">SCANNER</sys:String>
+    <sys:String x:Key="Refresh.Tooltip">Search for scanners again</sys:String>
+    <sys:String x:Key="Manage.Tooltip">Manage scanners: choose a default, remove scanners from the list</sys:String>
+    <sys:String x:Key="Label.Color">COLOR</sys:String>
+    <sys:String x:Key="Color.Color">Color</sys:String>
+    <sys:String x:Key="Color.Gray">Grayscale</sys:String>
+    <sys:String x:Key="Color.BW">Black &amp; white (text)</sys:String>
+    <sys:String x:Key="Label.Resolution">RESOLUTION</sys:String>
+    <sys:String x:Key="Dpi.100">100 dpi – fast preview</sys:String>
+    <sys:String x:Key="Dpi.150">150 dpi – screen</sys:String>
+    <sys:String x:Key="Dpi.200">200 dpi – documents</sys:String>
+    <sys:String x:Key="Dpi.300">300 dpi – recommended</sys:String>
+    <sys:String x:Key="Dpi.600">600 dpi – photos, high detail</sys:String>
+    <sys:String x:Key="Dpi.1200">1200 dpi – very slow</sys:String>
+    <sys:String x:Key="Label.Area">SCAN AREA</sys:String>
+    <sys:String x:Key="Area.A4">A4 (210 × 297 mm)</sys:String>
+    <sys:String x:Key="Area.Letter">Letter (8.5 × 11 in)</sys:String>
+    <sys:String x:Key="Area.A5">A5 (148 × 210 mm)</sys:String>
+    <sys:String x:Key="Area.Photo">Photo (10 × 15 cm)</sys:String>
+    <sys:String x:Key="Area.Full">Whole scanner glass</sys:String>
+    <sys:String x:Key="Label.Correction">IMAGE CORRECTION</sys:String>
+    <sys:String x:Key="Correction.Document">Document – sharp text, white paper</sys:String>
+    <sys:String x:Key="Correction.Photo">Photo – natural colors</sys:String>
+    <sys:String x:Key="Correction.Off">Off – raw scanner output</sys:String>
+    <sys:String x:Key="Label.Rotate">ROTATE</sys:String>
+    <sys:String x:Key="Rotate.90">90° clockwise</sys:String>
+    <sys:String x:Key="Rotate.270">90° counter-clockwise</sys:String>
+    <sys:String x:Key="Deskew">Straighten crooked pages automatically</sys:String>
+    <sys:String x:Key="Advanced">Advanced</sys:String>
+    <sys:String x:Key="Brightness">Brightness</sys:String>
+    <sys:String x:Key="Contrast">Contrast</sys:String>
+    <sys:String x:Key="Reset">Reset</sys:String>
+    <sys:String x:Key="Scan.Page">Scan page</sys:String>
+    <sys:String x:Key="Scan.Next">Scan next page</sys:String>
+    <sys:String x:Key="Scan.Hint">Place the next page on the glass and press Scan again to add more pages.</sys:String>
+    <sys:String x:Key="Import.Button">Add images from PC…</sys:String>
+    <sys:String x:Key="Label.Quality">QUALITY (PDF &amp; JPEG)</sys:String>
+    <sys:String x:Key="Quality.Small">Smaller file</sys:String>
+    <sys:String x:Key="Quality.Balanced">Balanced</sys:String>
+    <sys:String x:Key="Quality.Best">Best quality</sys:String>
+    <sys:String x:Key="Save.Tooltip">Save all pages (Ctrl+S)</sys:String>
+    <sys:String x:Key="Save.Button">Save as PDF or images…</sys:String>
+    <sys:String x:Key="Language.Tooltip">Language</sys:String>
+    <sys:String x:Key="Version">Version {0}</sys:String>
+    <sys:String x:Key="DevBuild">Development build</sys:String>
+    <sys:String x:Key="TestBuild">Test build {0}</sys:String>
+    <sys:String x:Key="CheckUpdates">Check for updates</sys:String>
+
+    <!-- Main window: preview -->
+    <sys:String x:Key="Update.WhatsNew">What's new</sys:String>
+    <sys:String x:Key="Update.Later">Later</sys:String>
+    <sys:String x:Key="Update.Install">Install update</sys:String>
+    <sys:String x:Key="Update.Available">ScanDesk {0} is available</sys:String>
+    <sys:String x:Key="Update.DetailWithVersion">You have {0}. Settings are kept; ScanDesk reopens by itself.</sys:String>
+    <sys:String x:Key="Update.Detail">Your settings are kept and ScanDesk reopens by itself.</sys:String>
+    <sys:String x:Key="Update.Downloading">Downloading ScanDesk {0}…</sys:String>
+    <sys:String x:Key="Update.Progress">{0:0.0} of {1:0.0} MB</sys:String>
+    <sys:String x:Key="Update.Installing">Installing ScanDesk {0}…</sys:String>
+    <sys:String x:Key="Update.Approve">Approve the Windows prompt. ScanDesk closes and reopens when the update is done.</sys:String>
+    <sys:String x:Key="Undo">Undo</sys:String>
+    <sys:String x:Key="Undo.Tooltip">Undo the last crop or rotation of this page (Ctrl+Z)</sys:String>
+    <sys:String x:Key="Fit.Button">Fit to page</sys:String>
+    <sys:String x:Key="Fit.Tooltip">Enlarge the page to fill a full sheet, with sharp, high-quality resizing</sys:String>
+    <sys:String x:Key="Fit.A4">Fit to A4 (210 × 297 mm)</sys:String>
+    <sys:String x:Key="Fit.Letter">Fit to Letter (8.5 × 11 in)</sys:String>
+    <sys:String x:Key="Crop">Crop</sys:String>
+    <sys:String x:Key="Crop.Tooltip">Select part of this page to keep</sys:String>
+    <sys:String x:Key="Crop.Apply">Apply crop</sys:String>
+    <sys:String x:Key="Crop.ApplyTooltip">Keep only the selected part (Enter)</sys:String>
+    <sys:String x:Key="Crop.CancelTooltip">Stop cropping (Esc)</sys:String>
+    <sys:String x:Key="Crop.HintStart">Drag over the part of the page you want to keep</sys:String>
+    <sys:String x:Key="Crop.HintAdjust">Drag the corners or edges to adjust, or drag inside to move</sys:String>
+    <sys:String x:Key="Cancel">Cancel</sys:String>
+    <sys:String x:Key="Preview">Preview</sys:String>
+    <sys:String x:Key="PageOf">Page {0} of {1}</sys:String>
+    <sys:String x:Key="Empty.Title">No pages yet</sys:String>
+    <sys:String x:Key="Empty.Line1">Put a document on the scanner glass and press Scan page.</sys:String>
+    <sys:String x:Key="Empty.Line2">You can also drag image files into this window.</sys:String>
+    <sys:String x:Key="OpenFolder">Open folder</sys:String>
+    <sys:String x:Key="Ready">Ready.</sys:String>
+
+    <!-- Main window: page list -->
+    <sys:String x:Key="Pages">Pages</sys:String>
+    <sys:String x:Key="PagesCount">Pages ({0})</sys:String>
+    <sys:String x:Key="Page">Page</sys:String>
+    <sys:String x:Key="ClearAll">Clear all</sys:String>
+    <sys:String x:Key="MoveUp">Move page up</sys:String>
+    <sys:String x:Key="MoveDown">Move page down</sys:String>
+    <sys:String x:Key="RotateLeft">Rotate left</sys:String>
+    <sys:String x:Key="RotateRight">Rotate right</sys:String>
+    <sys:String x:Key="DeletePage">Delete page (Del)</sys:String>
+
+    <!-- Busy and status messages -->
+    <sys:String x:Key="Busy.FindScanners">Looking for scanners…</sys:String>
+    <sys:String x:Key="Busy.Scanning">Scanning…</sys:String>
+    <sys:String x:Key="Busy.ScanningPage">Scanning page {0}…</sys:String>
+    <sys:String x:Key="Busy.Processing">Processing…</sys:String>
+    <sys:String x:Key="Busy.Adding">Adding images…</sys:String>
+    <sys:String x:Key="Busy.Rotating">Rotating…</sys:String>
+    <sys:String x:Key="Busy.Cropping">Cropping…</sys:String>
+    <sys:String x:Key="Busy.Enlarging">Enlarging to {0}…</sys:String>
+    <sys:String x:Key="Busy.Saving">Saving…</sys:String>
+    <sys:String x:Key="Busy.SavingPage">Saving page {0} of {1}…</sys:String>
+    <sys:String x:Key="Status.NoScanner">No scanner found.</sys:String>
+    <sys:String x:Key="Status.FoundScanners">Found {0} scanner(s).</sys:String>
+    <sys:String x:Key="Status.ListScannersFailed">Could not list scanners: {0}</sys:String>
+    <sys:String x:Key="Status.Scanned">Page {0} scanned. Put the next page on the glass and press Scan, or save.</sys:String>
+    <sys:String x:Key="Status.ScanFailed">Scan failed: {0}</sys:String>
+    <sys:String x:Key="Status.Added">Added {0} file(s).</sys:String>
+    <sys:String x:Key="Status.CouldNotRead">Could not read: {0}</sys:String>
+    <sys:String x:Key="Status.AllRemoved">All pages removed.</sys:String>
+    <sys:String x:Key="Status.Cropped">Page {0} cropped to {1} × {2} px. Press Undo to get the full page back.</sys:String>
+    <sys:String x:Key="Status.CropFailed">Cropping failed: {0}</sys:String>
+    <sys:String x:Key="Status.FitOne">Page {0} now fills a full {1} page. Press Undo to go back.</sys:String>
+    <sys:String x:Key="Status.FitMany">{0} pages now fill a full {1} page. Press Undo on a page to go back.</sys:String>
+    <sys:String x:Key="Status.FitFailed">Enlarging failed: {0}</sys:String>
+    <sys:String x:Key="Status.Restored">Page {0} restored.</sys:String>
+    <sys:String x:Key="Status.CheckingUpdates">Checking for updates…</sys:String>
+    <sys:String x:Key="Status.UpToDate">You have the latest version ({0}).</sys:String>
+    <sys:String x:Key="Status.UpdateCheckFailed">Could not check for updates: {0}</sys:String>
+    <sys:String x:Key="Status.UpdateCancelled">Update cancelled.</sys:String>
+    <sys:String x:Key="Status.UpdateFailed">Update failed: {0}</sys:String>
+    <sys:String x:Key="Status.SavedImages">Saved {0} images to {1}</sys:String>
+    <sys:String x:Key="Status.SavedPages">Saved {0} page(s) to {1}</sys:String>
+    <sys:String x:Key="Status.SaveFailed">Saving failed: {0}</sys:String>
+
+    <!-- Scanner hints -->
+    <sys:String x:Key="Hint.NoScanner">No scanner found. Switch the printer on, connect it by USB or Wi-Fi, then press refresh.</sys:String>
+    <sys:String x:Key="Hint.AllHidden">All scanners are removed from the list. Press the gear button to add one back.</sys:String>
+    <sys:String x:Key="Hint.Twice">Your printer may show up twice (USB/network). Use the gear button to pick a default or remove the extra one.</sys:String>
+    <sys:String x:Key="Hint.Hidden">{0} scanner(s) hidden. Use the gear button to show them.</sys:String>
+
+    <!-- Dialogs -->
+    <sys:String x:Key="Msg.NoScannerSelected">No scanner selected. Make sure the printer is on and press the refresh button.</sys:String>
+    <sys:String x:Key="ScanFailed">Scan failed</sys:String>
+    <sys:String x:Key="Msg.ScanFailed">Scan failed:&#10;&#10;{0}</sys:String>
+    <sys:String x:Key="Import.Title">Add images</sys:String>
+    <sys:String x:Key="Import.Filter">Images|*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.gif|All files|*.*</sys:String>
+    <sys:String x:Key="Msg.ClearAll">Remove all {0} page(s)? Unsaved scans will be lost.</sys:String>
+    <sys:String x:Key="Msg.UpdateUnsaved">You have {0} page(s) that are not saved. Installing the update closes ScanDesk and they will be lost.&#10;&#10;Install anyway?</sys:String>
+    <sys:String x:Key="Msg.UpdateFailed">The update could not be installed:&#10;&#10;{0}</sys:String>
+    <sys:String x:Key="Msg.NothingToSave">There is nothing to save yet. Scan a page first.</sys:String>
+    <sys:String x:Key="Save.Title">Save scan</sys:String>
+    <sys:String x:Key="Save.FileName">Scan {0}</sys:String>
+    <sys:String x:Key="Save.Filter">PDF document – all pages in one file (*.pdf)|*.pdf|JPEG images – one file per page (*.jpg)|*.jpg|PNG images – one file per page (*.png)|*.png|TIFF image – all pages in one file (*.tif)|*.tif</sys:String>
+    <sys:String x:Key="ReplaceFiles">Replace files</sys:String>
+    <sys:String x:Key="Msg.ReplaceFiles">{0} file(s) with these names already exist, e.g.&#10;{1}&#10;&#10;Replace them?</sys:String>
+    <sys:String x:Key="Msg.SaveFailed">Saving failed:&#10;&#10;{0}</sys:String>
+    <sys:String x:Key="Msg.CloseUnsaved">You have {0} scanned page(s) that are not saved. Close anyway?</sys:String>
+
+    <!-- Manage scanners -->
+    <sys:String x:Key="Manage.Title">Manage scanners</sys:String>
+    <sys:String x:Key="Manage.Intro">The default scanner is selected automatically when ScanDesk starts. Removed scanners stay hidden from the list until you add them back; nothing changes in Windows.</sys:String>
+    <sys:String x:Key="Manage.Empty">No scanners found. Switch the printer on and press refresh in the main window.</sys:String>
+    <sys:String x:Key="Manage.Default">Default</sys:String>
+    <sys:String x:Key="Manage.Remove">Remove</sys:String>
+    <sys:String x:Key="Manage.RemoveTooltip">Hide this scanner from the scanner list</sys:String>
+    <sys:String x:Key="Manage.AddBack">Add back</sys:String>
+    <sys:String x:Key="Manage.AddBackTooltip">Show this scanner in the scanner list again</sys:String>
+    <sys:String x:Key="Manage.DriverWindows">Windows built-in driver (network)</sys:String>
+    <sys:String x:Key="Manage.DriverVendor">Manufacturer's driver</sys:String>
+    <sys:String x:Key="Done">Done</sys:String>
+
+    <!-- Errors -->
+    <sys:String x:Key="Err.NoWia">Windows Image Acquisition (WIA) is not available on this PC.</sys:String>
+    <sys:String x:Key="Err.NotFound">The scanner could not be found. Make sure the printer is switched on, then press Refresh.</sys:String>
+    <sys:String x:Key="Err.Busy">The scanner is busy. Wait a moment and try again.</sys:String>
+    <sys:String x:Key="Err.Offline">Can't reach the scanner. Check that the printer is on and connected (USB or Wi-Fi), then press Refresh.</sys:String>
+    <sys:String x:Key="Err.CoverOpen">The scanner lid seems to be open. Close it and try again.</sys:String>
+    <sys:String x:Key="Err.PaperEmpty">There is no paper in the document feeder.</sys:String>
+    <sys:String x:Key="Err.PaperJam">The paper is jammed in the scanner.</sys:String>
+    <sys:String x:Key="Err.WarmingUp">The scanner is still warming up. Try again in a few seconds.</sys:String>
+    <sys:String x:Key="Err.Locked">The scanner is in use by another program. Close it and try again.</sys:String>
+    <sys:String x:Key="Err.Generic">The scanner reported an error ({0}): {1}</sys:String>
+    <sys:String x:Key="Err.DownloadIncomplete">The download was incomplete. Please try again.</sys:String>
+    <sys:String x:Key="Err.Checksum">The downloaded installer failed its safety check (checksum mismatch), so it was not run.</sys:String>
+</ResourceDictionary>

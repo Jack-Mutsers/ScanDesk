@@ -94,7 +94,7 @@ public static class UpdateChecker
         if (update.Size > 0 && info.Length != update.Size)
         {
             info.Delete();
-            throw new InvalidDataException("The download was incomplete. Please try again.");
+            throw new InvalidDataException(Loc.T("Err.DownloadIncomplete"));
         }
         if (update.Sha256 != null)
         {
@@ -104,7 +104,7 @@ public static class UpdateChecker
             {
                 fs.Close();
                 File.Delete(path);
-                throw new InvalidDataException("The downloaded installer failed its safety check (checksum mismatch), so it was not run.");
+                throw new InvalidDataException(Loc.T("Err.Checksum"));
             }
         }
         return path;

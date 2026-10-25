@@ -1,0 +1,183 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- Hoofdvenster: linkerpaneel -->
+    <sys:String x:Key="App.Subtitle">Scannen naar PDF of afbeeldingen</sys:String>
+    <sys:String x:Key="Label.Scanner">SCANNER</sys:String>
+    <sys:String x:Key="Refresh.Tooltip">Opnieuw zoeken naar scanners</sys:String>
+    <sys:String x:Key="Manage.Tooltip">Scanners beheren: kies een standaardscanner of verwijder scanners uit de lijst</sys:String>
+    <sys:String x:Key="Label.Color">KLEUR</sys:String>
+    <sys:String x:Key="Color.Color">Kleur</sys:String>
+    <sys:String x:Key="Color.Gray">Grijstinten</sys:String>
+    <sys:String x:Key="Color.BW">Zwart-wit (tekst)</sys:String>
+    <sys:String x:Key="Label.Resolution">RESOLUTIE</sys:String>
+    <sys:String x:Key="Dpi.100">100 dpi – snel voorbeeld</sys:String>
+    <sys:String x:Key="Dpi.150">150 dpi – beeldscherm</sys:String>
+    <sys:String x:Key="Dpi.200">200 dpi – documenten</sys:String>
+    <sys:String x:Key="Dpi.300">300 dpi – aanbevolen</sys:String>
+    <sys:String x:Key="Dpi.600">600 dpi – foto's, veel detail</sys:String>
+    <sys:String x:Key="Dpi.1200">1200 dpi – erg traag</sys:String>
+    <sys:String x:Key="Label.Area">SCANGEBIED</sys:String>
+    <sys:String x:Key="Area.A4">A4 (210 × 297 mm)</sys:String>
+    <sys:String x:Key="Area.Letter">Letter (8,5 × 11 inch)</sys:String>
+    <sys:String x:Key="Area.A5">A5 (148 × 210 mm)</sys:String>
+    <sys:String x:Key="Area.Photo">Foto (10 × 15 cm)</sys:String>
+    <sys:String x:Key="Area.Full">Volledige glasplaat</sys:String>
+    <sys:String x:Key="Label.Correction">BEELDCORRECTIE</sys:String>
+    <sys:String x:Key="Correction.Document">Document – scherpe tekst, wit papier</sys:String>
+    <sys:String x:Key="Correction.Photo">Foto – natuurlijke kleuren</sys:String>
+    <sys:String x:Key="Correction.Off">Uit – onbewerkte scan</sys:String>
+    <sys:String x:Key="Label.Rotate">DRAAIEN</sys:String>
+    <sys:String x:Key="Rotate.90">90° met de klok mee</sys:String>
+    <sys:String x:Key="Rotate.270">90° tegen de klok in</sys:String>
+    <sys:String x:Key="Deskew">Scheve pagina's automatisch rechtzetten</sys:String>
+    <sys:String x:Key="Advanced">Geavanceerd</sys:String>
+    <sys:String x:Key="Brightness">Helderheid</sys:String>
+    <sys:String x:Key="Contrast">Contrast</sys:String>
+    <sys:String x:Key="Reset">Herstellen</sys:String>
+    <sys:String x:Key="Scan.Page">Pagina scannen</sys:String>
+    <sys:String x:Key="Scan.Next">Volgende pagina scannen</sys:String>
+    <sys:String x:Key="Scan.Hint">Leg de volgende pagina op de glasplaat en druk opnieuw op Scannen om meer pagina's toe te voegen.</sys:String>
+    <sys:String x:Key="Import.Button">Afbeeldingen van pc toevoegen…</sys:String>
+    <sys:String x:Key="Label.Quality">KWALITEIT (PDF &amp; JPEG)</sys:String>
+    <sys:String x:Key="Quality.Small">Kleiner bestand</sys:String>
+    <sys:String x:Key="Quality.Balanced">Gebalanceerd</sys:String>
+    <sys:String x:Key="Quality.Best">Beste kwaliteit</sys:String>
+    <sys:String x:Key="Save.Tooltip">Alle pagina's opslaan (Ctrl+S)</sys:String>
+    <sys:String x:Key="Save.Button">Opslaan als PDF of afbeeldingen…</sys:String>
+    <sys:String x:Key="Language.Tooltip">Taal</sys:String>
+    <sys:String x:Key="Version">Versie {0}</sys:String>
+    <sys:String x:Key="DevBuild">Ontwikkelversie</sys:String>
+    <sys:String x:Key="TestBuild">Testversie {0}</sys:String>
+    <sys:String x:Key="CheckUpdates">Controleren op updates</sys:String>
+
+    <!-- Hoofdvenster: voorbeeld -->
+    <sys:String x:Key="Update.WhatsNew">Wat is er nieuw</sys:String>
+    <sys:String x:Key="Update.Later">Later</sys:String>
+    <sys:String x:Key="Update.Install">Update installeren</sys:String>
+    <sys:String x:Key="Update.Available">ScanDesk {0} is beschikbaar</sys:String>
+    <sys:String x:Key="Update.DetailWithVersion">Je hebt {0}. Instellingen blijven bewaard; ScanDesk start vanzelf opnieuw.</sys:String>
+    <sys:String x:Key="Update.Detail">Je instellingen blijven bewaard en ScanDesk start vanzelf opnieuw.</sys:String>
+    <sys:String x:Key="Update.Downloading">ScanDesk {0} downloaden…</sys:String>
+    <sys:String x:Key="Update.Progress">{0:0.0} van {1:0.0} MB</sys:String>
+    <sys:String x:Key="Update.Installing">ScanDesk {0} installeren…</sys:String>
+    <sys:String x:Key="Update.Approve">Geef toestemming in de Windows-melding. ScanDesk sluit en start opnieuw zodra de update klaar is.</sys:String>
+    <sys:String x:Key="Undo">Ongedaan maken</sys:String>
+    <sys:String x:Key="Undo.Tooltip">De laatste bijsnijding of draaiing van deze pagina ongedaan maken (Ctrl+Z)</sys:String>
+    <sys:String x:Key="Fit.Button">Passend maken</sys:String>
+    <sys:String x:Key="Fit.Tooltip">Vergroot de pagina tot een volledig vel, met scherpe vergroting van hoge kwaliteit</sys:String>
+    <sys:String x:Key="Fit.A4">Passend maken voor A4 (210 × 297 mm)</sys:String>
+    <sys:String x:Key="Fit.Letter">Passend maken voor Letter (8,5 × 11 inch)</sys:String>
+    <sys:String x:Key="Crop">Bijsnijden</sys:String>
+    <sys:String x:Key="Crop.Tooltip">Kies welk deel van deze pagina je wilt houden</sys:String>
+    <sys:String x:Key="Crop.Apply">Bijsnijden</sys:String>
+    <sys:String x:Key="Crop.ApplyTooltip">Alleen het geselecteerde deel houden (Enter)</sys:String>
+    <sys:String x:Key="Crop.CancelTooltip">Stoppen met bijsnijden (Esc)</sys:String>
+    <sys:String x:Key="Crop.HintStart">Sleep over het deel van de pagina dat je wilt houden</sys:String>
+    <sys:String x:Key="Crop.HintAdjust">Sleep aan de hoeken of randen om aan te passen, of sleep binnen het kader om te verplaatsen</sys:String>
+    <sys:String x:Key="Cancel">Annuleren</sys:String>
+    <sys:String x:Key="Preview">Voorbeeld</sys:String>
+    <sys:String x:Key="PageOf">Pagina {0} van {1}</sys:String>
+    <sys:String x:Key="Empty.Title">Nog geen pagina's</sys:String>
+    <sys:String x:Key="Empty.Line1">Leg een document op de glasplaat en klik op Pagina scannen.</sys:String>
+    <sys:String x:Key="Empty.Line2">Je kunt ook afbeeldingen naar dit venster slepen.</sys:String>
+    <sys:String x:Key="OpenFolder">Map openen</sys:String>
+    <sys:String x:Key="Ready">Klaar.</sys:String>
+
+    <!-- Hoofdvenster: paginalijst -->
+    <sys:String x:Key="Pages">Pagina's</sys:String>
+    <sys:String x:Key="PagesCount">Pagina's ({0})</sys:String>
+    <sys:String x:Key="Page">Pagina</sys:String>
+    <sys:String x:Key="ClearAll">Alles wissen</sys:String>
+    <sys:String x:Key="MoveUp">Pagina omhoog</sys:String>
+    <sys:String x:Key="MoveDown">Pagina omlaag</sys:String>
+    <sys:String x:Key="RotateLeft">Linksom draaien</sys:String>
+    <sys:String x:Key="RotateRight">Rechtsom draaien</sys:String>
+    <sys:String x:Key="DeletePage">Pagina verwijderen (Del)</sys:String>
+
+    <!-- Bezig- en statusmeldingen -->
+    <sys:String x:Key="Busy.FindScanners">Scanners zoeken…</sys:String>
+    <sys:String x:Key="Busy.Scanning">Scannen…</sys:String>
+    <sys:String x:Key="Busy.ScanningPage">Pagina {0} scannen…</sys:String>
+    <sys:String x:Key="Busy.Processing">Verwerken…</sys:String>
+    <sys:String x:Key="Busy.Adding">Afbeeldingen toevoegen…</sys:String>
+    <sys:String x:Key="Busy.Rotating">Draaien…</sys:String>
+    <sys:String x:Key="Busy.Cropping">Bijsnijden…</sys:String>
+    <sys:String x:Key="Busy.Enlarging">Vergroten tot {0}…</sys:String>
+    <sys:String x:Key="Busy.Saving">Opslaan…</sys:String>
+    <sys:String x:Key="Busy.SavingPage">Pagina {0} van {1} opslaan…</sys:String>
+    <sys:String x:Key="Status.NoScanner">Geen scanner gevonden.</sys:String>
+    <sys:String x:Key="Status.FoundScanners">{0} scanner(s) gevonden.</sys:String>
+    <sys:String x:Key="Status.ListScannersFailed">Kan scanners niet ophalen: {0}</sys:String>
+    <sys:String x:Key="Status.Scanned">Pagina {0} gescand. Leg de volgende pagina op de glasplaat en klik op Scannen, of sla op.</sys:String>
+    <sys:String x:Key="Status.ScanFailed">Scannen mislukt: {0}</sys:String>
+    <sys:String x:Key="Status.Added">{0} bestand(en) toegevoegd.</sys:String>
+    <sys:String x:Key="Status.CouldNotRead">Kan niet lezen: {0}</sys:String>
+    <sys:String x:Key="Status.AllRemoved">Alle pagina's verwijderd.</sys:String>
+    <sys:String x:Key="Status.Cropped">Pagina {0} bijgesneden tot {1} × {2} px. Klik op Ongedaan maken om de hele pagina terug te krijgen.</sys:String>
+    <sys:String x:Key="Status.CropFailed">Bijsnijden mislukt: {0}</sys:String>
+    <sys:String x:Key="Status.FitOne">Pagina {0} vult nu een volledige {1}-pagina. Klik op Ongedaan maken om terug te gaan.</sys:String>
+    <sys:String x:Key="Status.FitMany">{0} pagina's vullen nu een volledige {1}-pagina. Klik bij een pagina op Ongedaan maken om terug te gaan.</sys:String>
+    <sys:String x:Key="Status.FitFailed">Vergroten mislukt: {0}</sys:String>
+    <sys:String x:Key="Status.Restored">Pagina {0} hersteld.</sys:String>
+    <sys:String x:Key="Status.CheckingUpdates">Controleren op updates…</sys:String>
+    <sys:String x:Key="Status.UpToDate">Je hebt de nieuwste versie ({0}).</sys:String>
+    <sys:String x:Key="Status.UpdateCheckFailed">Kan niet controleren op updates: {0}</sys:String>
+    <sys:String x:Key="Status.UpdateCancelled">Update geannuleerd.</sys:String>
+    <sys:String x:Key="Status.UpdateFailed">Update mislukt: {0}</sys:String>
+    <sys:String x:Key="Status.SavedImages">{0} afbeeldingen opgeslagen in {1}</sys:String>
+    <sys:String x:Key="Status.SavedPages">{0} pagina('s) opgeslagen in {1}</sys:String>
+    <sys:String x:Key="Status.SaveFailed">Opslaan mislukt: {0}</sys:String>
+
+    <!-- Scannerhints -->
+    <sys:String x:Key="Hint.NoScanner">Geen scanner gevonden. Zet de printer aan, verbind hem via USB of wifi en klik op vernieuwen.</sys:String>
+    <sys:String x:Key="Hint.AllHidden">Alle scanners zijn uit de lijst verwijderd. Klik op het tandwiel om er een terug te zetten.</sys:String>
+    <sys:String x:Key="Hint.Twice">Je printer kan twee keer in de lijst staan (USB/netwerk). Klik op het tandwiel om een standaardscanner te kiezen of de extra te verwijderen.</sys:String>
+    <sys:String x:Key="Hint.Hidden">{0} scanner(s) verborgen. Klik op het tandwiel om ze te tonen.</sys:String>
+
+    <!-- Dialoogvensters -->
+    <sys:String x:Key="Msg.NoScannerSelected">Geen scanner geselecteerd. Controleer of de printer aan staat en klik op vernieuwen.</sys:String>
+    <sys:String x:Key="ScanFailed">Scannen mislukt</sys:String>
+    <sys:String x:Key="Msg.ScanFailed">Scannen mislukt:&#10;&#10;{0}</sys:String>
+    <sys:String x:Key="Import.Title">Afbeeldingen toevoegen</sys:String>
+    <sys:String x:Key="Import.Filter">Afbeeldingen|*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.gif|Alle bestanden|*.*</sys:String>
+    <sys:String x:Key="Msg.ClearAll">Alle {0} pagina('s) verwijderen? Niet-opgeslagen scans gaan verloren.</sys:String>
+    <sys:String x:Key="Msg.UpdateUnsaved">Je hebt {0} pagina('s) die niet zijn opgeslagen. Bij het installeren van de update sluit ScanDesk en gaan ze verloren.&#10;&#10;Toch installeren?</sys:String>
+    <sys:String x:Key="Msg.UpdateFailed">De update kon niet worden geïnstalleerd:&#10;&#10;{0}</sys:String>
+    <sys:String x:Key="Msg.NothingToSave">Er is nog niets om op te slaan. Scan eerst een pagina.</sys:String>
+    <sys:String x:Key="Save.Title">Scan opslaan</sys:String>
+    <sys:String x:Key="Save.FileName">Scan {0}</sys:String>
+    <sys:String x:Key="Save.Filter">PDF-document – alle pagina's in één bestand (*.pdf)|*.pdf|JPEG-afbeeldingen – één bestand per pagina (*.jpg)|*.jpg|PNG-afbeeldingen – één bestand per pagina (*.png)|*.png|TIFF-afbeelding – alle pagina's in één bestand (*.tif)|*.tif</sys:String>
+    <sys:String x:Key="ReplaceFiles">Bestanden vervangen</sys:String>
+    <sys:String x:Key="Msg.ReplaceFiles">Er bestaan al {0} bestand(en) met deze namen, bijvoorbeeld&#10;{1}&#10;&#10;Wil je ze vervangen?</sys:String>
+    <sys:String x:Key="Msg.SaveFailed">Opslaan mislukt:&#10;&#10;{0}</sys:String>
+    <sys:String x:Key="Msg.CloseUnsaved">Je hebt {0} gescande pagina('s) die niet zijn opgeslagen. Toch afsluiten?</sys:String>
+
+    <!-- Scanners beheren -->
+    <sys:String x:Key="Manage.Title">Scanners beheren</sys:String>
+    <sys:String x:Key="Manage.Intro">De standaardscanner wordt automatisch gekozen als ScanDesk start. Verwijderde scanners blijven verborgen tot je ze terugzet; er verandert niets in Windows.</sys:String>
+    <sys:String x:Key="Manage.Empty">Geen scanners gevonden. Zet de printer aan en klik in het hoofdvenster op vernieuwen.</sys:String>
+    <sys:String x:Key="Manage.Default">Standaard</sys:String>
+    <sys:String x:Key="Manage.Remove">Verwijderen</sys:String>
+    <sys:String x:Key="Manage.RemoveTooltip">Deze scanner verbergen in de scannerlijst</sys:String>
+    <sys:String x:Key="Manage.AddBack">Terugzetten</sys:String>
+    <sys:String x:Key="Manage.AddBackTooltip">Deze scanner weer tonen in de scannerlijst</sys:String>
+    <sys:String x:Key="Manage.DriverWindows">Ingebouwde Windows-driver (netwerk)</sys:String>
+    <sys:String x:Key="Manage.DriverVendor">Driver van de fabrikant</sys:String>
+    <sys:String x:Key="Done">Gereed</sys:String>
+
+    <!-- Foutmeldingen -->
+    <sys:String x:Key="Err.NoWia">Windows Image Acquisition (WIA) is niet beschikbaar op deze pc.</sys:String>
+    <sys:String x:Key="Err.NotFound">De scanner is niet gevonden. Controleer of de printer aan staat en klik op vernieuwen.</sys:String>
+    <sys:String x:Key="Err.Busy">De scanner is bezet. Wacht even en probeer het opnieuw.</sys:String>
+    <sys:String x:Key="Err.Offline">De scanner is niet bereikbaar. Controleer of de printer aan staat en verbonden is (USB of wifi) en klik op vernieuwen.</sys:String>
+    <sys:String x:Key="Err.CoverOpen">Het deksel van de scanner lijkt open te staan. Sluit het en probeer het opnieuw.</sys:String>
+    <sys:String x:Key="Err.PaperEmpty">Er zit geen papier in de documentinvoer.</sys:String>
+    <sys:String x:Key="Err.PaperJam">Het papier zit vast in de scanner.</sys:String>
+    <sys:String x:Key="Err.WarmingUp">De scanner is nog aan het opwarmen. Probeer het over een paar seconden opnieuw.</sys:String>
+    <sys:String x:Key="Err.Locked">De scanner wordt door een ander programma gebruikt. Sluit dat programma en probeer het opnieuw.</sys:String>
+    <sys:String x:Key="Err.Generic">De scanner meldt een fout ({0}): {1}</sys:String>
+    <sys:String x:Key="Err.DownloadIncomplete">De download is onvolledig. Probeer het opnieuw.</sys:String>
+    <sys:String x:Key="Err.Checksum">Het gedownloade installatieprogramma kwam niet door de veiligheidscontrole (controlesom klopt niet) en is daarom niet uitgevoerd.</sys:String>
+</ResourceDictionary>

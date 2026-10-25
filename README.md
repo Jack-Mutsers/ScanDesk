@@ -11,6 +11,12 @@ A simple Windows 11 scanner app: scan several pages from any WIA scanner (Epson,
 - Crop, rotate, reorder and delete pages, with undo
 - Fit to page: enlarge an A5 scan or a cropped part to fill an A4 or Letter sheet, with sharp high-quality resizing instead of blurry stretching
 - Add existing images by dragging them into the window
+- Dutch (default) and English; switch in the bottom-left corner
+
+## Branches and testing
+
+- `develop` is where new features go. Every push builds a test installer (`ScanDesk-Setup-x.y.z-test.N.exe`), attached to the run on the **Actions** tab under *Test build*. Test builds never reach users.
+- `main` is protected: changes arrive only through a reviewed pull request from `develop`. Merging into `main` publishes a new release, which the app offers as an update.
 
 ## Download
 

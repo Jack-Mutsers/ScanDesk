@@ -57,7 +57,7 @@ public static class WiaScanner
     static dynamic CreateManager()
     {
         var type = Type.GetTypeFromProgID("WIA.DeviceManager")
-            ?? throw new ScanException("Windows Image Acquisition (WIA) is not available on this PC.");
+            ?? throw new ScanException(Loc.T("Err.NoWia"));
         return Activator.CreateInstance(type)!;
     }
 
@@ -101,7 +101,7 @@ public static class WiaScanner
                 }
             }
             if (device == null)
-                throw new ScanException("The scanner could not be found. Make sure the printer is switched on, then press Refresh.");
+                throw new ScanException(Loc.T("Err.NotFound"));
 
             dynamic item = device.Items[1];
 
@@ -253,15 +253,15 @@ public static class WiaScanner
 
     static ScanException Translate(COMException ex) => (uint)ex.HResult switch
     {
-        0x80210006 => new ScanException("The scanner is busy. Wait a moment and try again.", ex),
+        0x80210006 => new ScanException(Loc.T("Err.Busy"), ex),
         0x80210005 or 0x8021000A or 0x80210015 =>
-            new ScanException("Can't reach the scanner. Check that the printer is on and connected (USB or Wi-Fi), then press Refresh.", ex),
-        0x80210016 => new ScanException("The scanner lid seems to be open. Close it and try again.", ex),
-        0x80210003 => new ScanException("There is no paper in the document feeder.", ex),
-        0x80210002 => new ScanException("The paper is jammed in the scanner.", ex),
-        0x80210007 => new ScanException("The scanner is still warming up. Try again in a few seconds.", ex),
-        0x8021000D => new ScanException("The scanner is in use by another program. Close it and try again.", ex),
-        _ => new ScanException($"The scanner reported an error (0x{(uint)ex.HResult:X8}): {ex.Message}", ex),
+            new ScanException(Loc.T("Err.Offline"), ex),
+        0x80210016 => new ScanException(Loc.T("Err.CoverOpen"), ex),
+        0x80210003 => new ScanException(Loc.T("Err.PaperEmpty"), ex),
+        0x80210002 => new ScanException(Loc.T("Err.PaperJam"), ex),
+        0x80210007 => new ScanException(Loc.T("Err.WarmingUp"), ex),
+        0x8021000D => new ScanException(Loc.T("Err.Locked"), ex),
+        _ => new ScanException(Loc.F("Err.Generic", $"0x{(uint)ex.HResult:X8}", ex.Message), ex),
     };
 
     static void Release(object? com)

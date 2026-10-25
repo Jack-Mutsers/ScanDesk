@@ -46,8 +46,8 @@ public sealed class ManagedScanner(ScannerInfo info) : INotifyPropertyChanged
 
     /// <summary>Tells duplicate entries of the same printer apart.</summary>
     public string Detail => Info.DeviceId.StartsWith(@"SWD\Escl", StringComparison.OrdinalIgnoreCase)
-        ? "Windows built-in driver (network)"
-        : "Manufacturer's driver";
+        ? Loc.T("Manage.DriverWindows")
+        : Loc.T("Manage.DriverVendor");
 
     public bool IsDefault { get => _isDefault; set { if (_isDefault != value) { _isDefault = value; OnChanged(); } } }
 
