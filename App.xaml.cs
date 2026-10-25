@@ -12,6 +12,7 @@ public partial class App : Application
             args.Handled = true;
         };
         PageStore.StartSession();
+        Loc.Apply(AppSettings.Load().Language);
         base.OnStartup(e);
     }
 

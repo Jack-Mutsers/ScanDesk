@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 namespace ScanDesk;
 
-public partial class MainWindow : Window
+public partial class MainWindow : Window, ISettingsHost
 {
     readonly ObservableCollection<ScannedPage> _pages = [];
     readonly AppSettings _settings = AppSettings.Load();
@@ -26,9 +26,6 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         PageList.ItemsSource = _pages;
-        VersionRun.Text = UpdateChecker.CurrentVersion != null
-            ? $"Version {UpdateChecker.CurrentVersionText}"
-            : "Development build";
         _pages.CollectionChanged += (_, _) => { Renumber(); UpdateUi(); };
 
         SelectByTag(ColorBox, _settings.Color.ToString());
@@ -36,7 +33,6 @@ public partial class MainWindow : Window
         SelectByTag(AreaBox, _settings.Area.ToString());
         SelectByTag(QualityBox, _settings.Quality.ToString());
         SelectByTag(EnhanceBox, _settings.Enhance.ToString());
-        SelectByTag(RotateBox, _settings.Rotation.ToString());
         BrightnessSlider.Value = _settings.Brightness;
         ContrastSlider.Value = _settings.Contrast;
         DeskewBox.IsChecked = _settings.Deskew;
@@ -65,18 +61,18 @@ public partial class MainWindow : Window
 
     ScannerInfo? SelectedScanner => (ScannerBox.SelectedItem as ScannerChoice)?.Info;
 
-    async Task RefreshScannersAsync()
+    public async Task RefreshScannersAsync()
     {
-        SetBusy(true, "Looking for scanners…");
+        SetBusy(true, Loc.T("Busy.FindScanners"));
         try
         {
             _allScanners = await WiaScanner.RunStaAsync(WiaScanner.GetScanners);
             ApplyScannerList(keepSelection: false);
-            SetStatus(_allScanners.Count == 0 ? "No scanner found." : $"Found {_allScanners.Count} scanner(s).");
+            SetStatus(_allScanners.Count == 0 ? Loc.T("Status.NoScanner") : Loc.F("Status.FoundScanners", _allScanners.Count));
         }
         catch (Exception ex)
         {
-            SetStatus("Could not list scanners: " + ex.Message);
+            SetStatus(Loc.F("Status.ListScannersFailed", ex.Message));
         }
         finally { SetBusy(false); }
     }
@@ -98,32 +94,20 @@ public partial class MainWindow : Window
 
         int hidden = _allScanners.Count - visible.Count;
         if (_allScanners.Count == 0)
-            ScannerHint.Text = "No scanner found. Switch the printer on, connect it by USB or Wi-Fi, then press refresh.";
+            ScannerHint.Text = Loc.T("Hint.NoScanner");
         else if (visible.Count == 0)
-            ScannerHint.Text = "All scanners are removed from the list. Press the gear button to add one back.";
+            ScannerHint.Text = Loc.T("Hint.AllHidden");
         else if (visible.Count > 1 && _settings.DefaultScannerId == null)
-            ScannerHint.Text = "Your printer may show up twice (USB/network). Use the gear button to pick a default or remove the extra one.";
+            ScannerHint.Text = Loc.T("Hint.Twice");
         else if (hidden > 0)
-            ScannerHint.Text = $"{hidden} scanner(s) hidden. Use the gear button to show them.";
+            ScannerHint.Text = Loc.F("Hint.Hidden", hidden);
         else ScannerHint.Text = "";
         ScannerHint.Visibility = ScannerHint.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
     async void Refresh_Click(object sender, RoutedEventArgs e) => await RefreshScannersAsync();
 
-    void Manage_Click(object sender, RoutedEventArgs e)
-    {
-        var dlg = new ScannerManagerWindow(_allScanners, _settings.DefaultScannerId, _settings.HiddenScannerIds) { Owner = this };
-        if (dlg.ShowDialog() != true) return;
-
-        // Keep hidden ids of scanners that are offline right now; update the ones shown in the dialog.
-        var shown = dlg.ShownIds.ToHashSet();
-        _settings.HiddenScannerIds = _settings.HiddenScannerIds.Where(id => !shown.Contains(id)).Union(dlg.HiddenIds).ToList();
-        _settings.DefaultScannerId = dlg.DefaultId
-            ?? (_allScanners.Any(s => s.DeviceId == _settings.DefaultScannerId) ? null : _settings.DefaultScannerId);
-        _settings.Save();
-        ApplyScannerList(keepSelection: true);
-    }
+    void Manage_Click(object sender, RoutedEventArgs e) => OpenSettings(SettingsPage.Scanners);
 
     // ---------- Scanning ----------
 
@@ -132,7 +116,7 @@ public partial class MainWindow : Window
         if (_busy) return;
         if (SelectedScanner is not { } scanner)
         {
-            MessageBox.Show(this, "No scanner selected. Make sure the printer is on and press the refresh button.",
+            MessageBox.Show(this, Loc.T("Msg.NoScannerSelected"),
                 "ScanDesk", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -144,31 +128,31 @@ public partial class MainWindow : Window
         var enhance = new EnhanceOptions(
             Enum.Parse<EnhanceMode>(TagOf(EnhanceBox) ?? "Document"),
             (int)BrightnessSlider.Value, (int)ContrastSlider.Value,
-            int.Parse(TagOf(RotateBox) ?? "0"),
+            0, // pages are rotated afterwards with the Rotate button / Page menu
             DeskewBox.IsChecked == true);
         SaveSettings();
 
-        SetBusy(true, $"Scanning page {_pages.Count + 1}…");
+        SetBusy(true, Loc.F("Busy.ScanningPage", _pages.Count + 1));
         try
         {
             var result = await WiaScanner.RunStaAsync(() => WiaScanner.Scan(scanner.DeviceId, settings, PageStore.SessionFolder));
-            SetBusy(true, "Processing…");
+            SetBusy(true, Loc.T("Busy.Processing"));
             var page = await Task.Run(() => PageStore.FromScan(result, settings.Color, enhance));
             _pages.Add(page);
             _unsaved = true;
             PageList.SelectedItem = page;
             PageList.ScrollIntoView(page);
-            SetStatus($"Page {page.Number} scanned. Put the next page on the glass and press Scan, or save.");
+            SetStatus(Loc.F("Status.Scanned", page.Number));
         }
         catch (ScanException ex)
         {
             SetStatus(ex.Message);
-            MessageBox.Show(this, ex.Message, "Scan failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, ex.Message, Loc.T("ScanFailed"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (Exception ex)
         {
-            SetStatus("Scan failed: " + ex.Message);
-            MessageBox.Show(this, "Scan failed:\n\n" + ex.Message, "Scan failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+            SetStatus(Loc.F("Status.ScanFailed", ex.Message));
+            MessageBox.Show(this, Loc.F("Msg.ScanFailed", ex.Message), Loc.T("ScanFailed"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         finally { SetBusy(false); }
     }
@@ -185,9 +169,9 @@ public partial class MainWindow : Window
     {
         var dlg = new OpenFileDialog
         {
-            Title = "Add images",
+            Title = Loc.T("Import.Title"),
             Multiselect = true,
-            Filter = "Images|*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.gif|All files|*.*",
+            Filter = Loc.T("Import.Filter"),
         };
         if (dlg.ShowDialog(this) == true) await ImportAsync(dlg.FileNames);
     }
@@ -197,7 +181,7 @@ public partial class MainWindow : Window
         if (_busy) return;
         var list = files.Where(f => ImageExtensions.Contains(Path.GetExtension(f).ToLowerInvariant())).ToList();
         if (list.Count == 0) return;
-        SetBusy(true, "Adding images…");
+        SetBusy(true, Loc.T("Busy.Adding"));
         var failed = new List<string>();
         try
         {
@@ -212,7 +196,7 @@ public partial class MainWindow : Window
             }
             _unsaved = true;
             if (_pages.Count > 0) PageList.SelectedItem = _pages[^1];
-            SetStatus(failed.Count == 0 ? $"Added {list.Count} file(s)." : $"Could not read: {string.Join(", ", failed)}");
+            SetStatus(failed.Count == 0 ? Loc.F("Status.Added", list.Count) : Loc.F("Status.CouldNotRead", string.Join(", ", failed)));
         }
         finally { SetBusy(false); }
     }
@@ -256,7 +240,7 @@ public partial class MainWindow : Window
     {
         var sel = SelectedPages();
         if (sel.Count == 0 || _busy) return;
-        SetBusy(true, "Rotating…");
+        SetBusy(true, Loc.T("Busy.Rotating"));
         try
         {
             foreach (var p in sel)
@@ -272,6 +256,7 @@ public partial class MainWindow : Window
 
     async void RotateLeft_Click(object sender, RoutedEventArgs e) => await RotateAsync(-90);
     async void RotateRight_Click(object sender, RoutedEventArgs e) => await RotateAsync(90);
+    async void Rotate180_Click(object sender, RoutedEventArgs e) => await RotateAsync(180);
 
     void Delete_Click(object sender, RoutedEventArgs e) => DeleteSelected();
 
@@ -292,12 +277,12 @@ public partial class MainWindow : Window
     void ClearAll_Click(object sender, RoutedEventArgs e)
     {
         if (_pages.Count == 0 || _busy) return;
-        if (_unsaved && MessageBox.Show(this, $"Remove all {_pages.Count} page(s)? Unsaved scans will be lost.", "Clear all",
+        if (_unsaved && MessageBox.Show(this, Loc.F("Msg.ClearAll", _pages.Count), Loc.T("ClearAll"),
                 MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK) return;
         foreach (var f in _pages.SelectMany(p => p.AllFiles())) PageStore.TryDelete(f);
         _pages.Clear();
         _unsaved = false;
-        SetStatus("All pages removed.");
+        SetStatus(Loc.T("Status.AllRemoved"));
     }
 
     void PageList_KeyDown(object sender, KeyEventArgs e)
@@ -363,11 +348,11 @@ public partial class MainWindow : Window
         if (page == null)
         {
             PreviewImage.Source = null;
-            PreviewTitle.Text = "Preview";
+            PreviewTitle.Text = Loc.T("Preview");
             PreviewInfo.Text = "";
             return;
         }
-        PreviewTitle.Text = $"Page {page.Number} of {_pages.Count}";
+        PreviewTitle.Text = Loc.F("PageOf", page.Number, _pages.Count);
         PreviewInfo.Text = page.SizeText;
         PreviewImage.Source = page.Thumbnail;
         string path = page.FilePath;
@@ -430,20 +415,82 @@ public partial class MainWindow : Window
         var rect = new Int32Rect(x, y, Math.Clamp(w, 1, page.PixelWidth - x), Math.Clamp(h, 1, page.PixelHeight - y));
 
         EndCropMode();
-        SetBusy(true, "Cropping…");
+        SetBusy(true, Loc.T("Busy.Cropping"));
         try
         {
             string path = page.FilePath;
             page.Apply(await Task.Run(() => PageStore.Crop(path, rect)));
             _unsaved = true;
-            SetStatus($"Page {page.Number} cropped to {rect.Width} × {rect.Height} px. Press Undo to get the full page back.");
+            SetStatus(Loc.F("Status.Cropped", page.Number, rect.Width, rect.Height));
         }
         catch (Exception ex)
         {
-            SetStatus("Cropping failed: " + ex.Message);
+            SetStatus(Loc.F("Status.CropFailed", ex.Message));
         }
         finally { SetBusy(false); }
         ShowPreview();
+    }
+
+    // ---------- Language ----------
+
+    // ---------- Settings window ----------
+
+    public AppSettings Settings => _settings;
+    public IReadOnlyList<ScannerInfo> Scanners => _allScanners;
+
+    void OpenSettings(SettingsPage page)
+    {
+        if (_busy) return;
+        new SettingsWindow(this, page) { Owner = this }.ShowDialog();
+    }
+
+    void Settings_Click(object sender, RoutedEventArgs e) => OpenSettings(SettingsPage.General);
+    void About_Click(object sender, RoutedEventArgs e) => OpenSettings(SettingsPage.About);
+    void Exit_Click(object sender, RoutedEventArgs e) => Close();
+    void Releases_Click(object sender, RoutedEventArgs e) => UpdateChecker.OpenInBrowser(UpdateChecker.ReleasesUrl);
+    void Privacy_Click(object sender, RoutedEventArgs e) =>
+        UpdateChecker.OpenInBrowser("https://github.com/Jack-Mutsers/ScanDesk/blob/main/PRIVACY.md");
+
+    public void SetLanguage(string code)
+    {
+        if (code == Loc.Language) return;
+        Loc.Apply(code);
+        _settings.Language = code;
+        _settings.Save();
+
+        // Combo boxes keep showing the old text of their selected item until it is re-selected.
+        foreach (var box in new[] { ColorBox, DpiBox, AreaBox, EnhanceBox, QualityBox })
+        {
+            int i = box.SelectedIndex;
+            box.SelectedIndex = -1;
+            box.SelectedIndex = i;
+        }
+        ApplyScannerList(keepSelection: true);
+        UpdateUi();
+        ShowPreview();
+        if (_update != null && UpdateBanner.Visibility == Visibility.Visible && UpdateButtons.IsEnabled) ShowUpdate(_update);
+        if (_cropMode) RenderCrop();
+        SetStatus(Loc.T("Ready"));
+    }
+
+    /// <summary>Lets people turn off the startup check, the only time ScanDesk contacts the internet on its own.</summary>
+    public void SetAutoUpdate(bool on)
+    {
+        _settings.AutoCheckUpdates = on;
+        _settings.Save();
+    }
+
+    public async Task<string> CheckForUpdatesNowAsync() => await CheckForUpdatesAsync(manual: true) ?? "";
+
+    public void SetScannerVisibility(string? defaultId, IEnumerable<string> hiddenIds, IEnumerable<string> shownIds)
+    {
+        // Keep hidden ids of scanners that are offline right now; update the ones shown in Settings.
+        var shown = shownIds.ToHashSet();
+        _settings.HiddenScannerIds = _settings.HiddenScannerIds.Where(id => !shown.Contains(id)).Union(hiddenIds).ToList();
+        _settings.DefaultScannerId = defaultId
+            ?? (_allScanners.Any(sc => sc.DeviceId == _settings.DefaultScannerId) ? null : _settings.DefaultScannerId);
+        _settings.Save();
+        ApplyScannerList(keepSelection: true);
     }
 
     // ---------- Updates ----------
@@ -451,20 +498,28 @@ public partial class MainWindow : Window
     UpdateInfo? _update;
 
     /// <summary>Looks for a newer release on GitHub. Automatic checks stay silent when offline or up to date.</summary>
-    async Task CheckForUpdatesAsync(bool manual)
+    /// <returns>For manual checks, the result to show the user.</returns>
+    async Task<string?> CheckForUpdatesAsync(bool manual)
     {
-        if (!manual && UpdateChecker.CurrentVersion == null) return; // local builds don't nag
-        if (manual) SetStatus("Checking for updates…");
+        if (!manual && (UpdateChecker.CurrentVersion == null || !_settings.AutoCheckUpdates)) return null; // local builds don't nag
+        if (manual) SetStatus(Loc.T("Status.CheckingUpdates"));
+        string? result = null;
         try
         {
             var update = await UpdateChecker.CheckAsync();
-            if (update != null) ShowUpdate(update);
-            else if (manual) SetStatus($"You have the latest version ({UpdateChecker.CurrentVersionText}).");
+            if (update != null)
+            {
+                ShowUpdate(update);
+                result = Loc.F("Update.Available", update.Version);
+            }
+            else if (manual) result = Loc.F("Status.UpToDate", UpdateChecker.CurrentVersionText);
         }
         catch (Exception ex)
         {
-            if (manual) SetStatus("Could not check for updates: " + ex.Message);
+            if (manual) result = Loc.F("Status.UpdateCheckFailed", ex.Message);
         }
+        if (manual && result != null) SetStatus(result);
+        return result;
     }
 
     async void CheckUpdates_Click(object sender, RoutedEventArgs e) => await CheckForUpdatesAsync(manual: true);
@@ -472,10 +527,10 @@ public partial class MainWindow : Window
     void ShowUpdate(UpdateInfo update)
     {
         _update = update;
-        UpdateTitle.Text = $"ScanDesk {update.Version} is available";
+        UpdateTitle.Text = Loc.F("Update.Available", update.Version);
         UpdateDetail.Text = UpdateChecker.CurrentVersion != null
-            ? $"You have {UpdateChecker.CurrentVersionText}. Settings are kept; ScanDesk reopens by itself."
-            : "Your settings are kept and ScanDesk reopens by itself.";
+            ? Loc.F("Update.DetailWithVersion", UpdateChecker.CurrentVersionText)
+            : Loc.T("Update.Detail");
         UpdateProgress.Visibility = Visibility.Collapsed;
         UpdateButtons.IsEnabled = true;
         UpdateBanner.Visibility = Visibility.Visible;
@@ -492,28 +547,28 @@ public partial class MainWindow : Window
     {
         if (_update is not { } update || _busy) return;
         if (_unsaved && _pages.Count > 0 && MessageBox.Show(this,
-                $"You have {_pages.Count} page(s) that are not saved. Installing the update closes ScanDesk and they will be lost.\n\nInstall anyway?",
-                "Install update", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
+                Loc.F("Msg.UpdateUnsaved", _pages.Count),
+                Loc.T("Update.Install"), MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
 
         UpdateButtons.IsEnabled = false;
         UpdateProgress.Value = 0;
         UpdateProgress.Visibility = Visibility.Visible;
-        UpdateTitle.Text = $"Downloading ScanDesk {update.Version}…";
+        UpdateTitle.Text = Loc.F("Update.Downloading", update.Version);
         double totalMb = update.Size / 1048576.0;
         try
         {
             string installer = await UpdateChecker.DownloadAsync(update, new Progress<double>(p =>
             {
                 UpdateProgress.Value = p;
-                UpdateDetail.Text = $"{p * totalMb:0.0} of {totalMb:0.0} MB";
+                UpdateDetail.Text = Loc.F("Update.Progress", p * totalMb, totalMb);
             }));
 
-            UpdateTitle.Text = $"Installing ScanDesk {update.Version}…";
-            UpdateDetail.Text = "Approve the Windows prompt. ScanDesk closes and reopens when the update is done.";
+            UpdateTitle.Text = Loc.F("Update.Installing", update.Version);
+            UpdateDetail.Text = Loc.T("Update.Approve");
             if (!UpdateChecker.LaunchInstaller(installer))
             {
                 ShowUpdate(update);
-                SetStatus("Update cancelled.");
+                SetStatus(Loc.T("Status.UpdateCancelled"));
                 return;
             }
             _unsaved = false; // already confirmed above
@@ -522,17 +577,18 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             ShowUpdate(update);
-            SetStatus("Update failed: " + ex.Message);
-            MessageBox.Show(this, "The update could not be installed:\n\n" + ex.Message, "ScanDesk", MessageBoxButton.OK, MessageBoxImage.Warning);
+            SetStatus(Loc.F("Status.UpdateFailed", ex.Message));
+            MessageBox.Show(this, Loc.F("Msg.UpdateFailed", ex.Message), "ScanDesk", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
     // ---------- Fit to page ----------
 
-    void Fit_Click(object sender, RoutedEventArgs e)
+    /// <summary>Opens a button's drop-down menu (Rotate, Fit to format) below it.</summary>
+    void DropDown_Click(object sender, RoutedEventArgs e)
     {
-        if (FitButton.ContextMenu is not { } menu) return;
-        menu.PlacementTarget = FitButton;
+        if (sender is not Button { ContextMenu: { } menu } button) return;
+        menu.PlacementTarget = button;
         menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
         menu.IsOpen = true;
     }
@@ -547,7 +603,7 @@ public partial class MainWindow : Window
     {
         var sel = SelectedPages();
         if (sel.Count == 0 || _busy) return;
-        SetBusy(true, $"Enlarging to {Upscaler.PaperName(paper)}…");
+        SetBusy(true, Loc.F("Busy.Enlarging", Upscaler.PaperName(paper)));
         try
         {
             foreach (var p in sel)
@@ -559,12 +615,12 @@ public partial class MainWindow : Window
             }
             _unsaved = true;
             SetStatus(sel.Count == 1
-                ? $"Page {sel[0].Number} now fills a full {Upscaler.PaperName(paper)} page. Press Undo to go back."
-                : $"{sel.Count} pages now fill a {Upscaler.PaperName(paper)} sheet. Press Undo on a page to go back.");
+                ? Loc.F("Status.FitOne", sel[0].Number, Upscaler.PaperName(paper))
+                : Loc.F("Status.FitMany", sel.Count, Upscaler.PaperName(paper)));
         }
         catch (Exception ex)
         {
-            SetStatus("Enlarging failed: " + ex.Message);
+            SetStatus(Loc.F("Status.FitFailed", ex.Message));
         }
         finally { SetBusy(false); }
         ShowPreview();
@@ -577,7 +633,7 @@ public partial class MainWindow : Window
         if (_busy || PreviewPage is not { CanUndo: true } page) return;
         page.Undo();
         _unsaved = true;
-        SetStatus($"Page {page.Number} restored.");
+        SetStatus(Loc.F("Status.Restored", page.Number));
         ShowPreview();
         UpdateUi();
     }
@@ -589,9 +645,23 @@ public partial class MainWindow : Window
             if (e.Key == Key.Escape) { EndCropMode(); e.Handled = true; }
             else if (e.Key == Key.Enter && _cropSel != null) { _ = ApplyCropAsync(); e.Handled = true; }
         }
-        else if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
+        else if (Keyboard.Modifiers == ModifierKeys.Control)
         {
-            UndoPage();
+            switch (e.Key)
+            {
+                case Key.Z: UndoPage(); break;
+                case Key.O: Import_Click(this, e); break;
+                case Key.Enter: Scan_Click(this, e); break;
+                case Key.L: RotateLeft_Click(this, e); break;
+                case Key.R: RotateRight_Click(this, e); break;
+                case Key.OemComma: OpenSettings(SettingsPage.General); break;
+                default: return;
+            }
+            e.Handled = true;
+        }
+        else if (e.Key == Key.F5 && Keyboard.Modifiers == ModifierKeys.None)
+        {
+            Refresh_Click(this, e);
             e.Handled = true;
         }
     }
@@ -717,8 +787,8 @@ public partial class MainWindow : Window
         var sel = SelectionOnCanvas();
         ApplyCropButton.IsEnabled = sel != null && !_busy;
         CropHint.Text = sel == null
-            ? "Drag over the part of the page you want to keep"
-            : "Drag the corners or edges to adjust, or drag inside to move";
+            ? Loc.T("Crop.HintStart")
+            : Loc.T("Crop.HintAdjust");
 
         var handles = new[] { CropHandle0, CropHandle1, CropHandle2, CropHandle3 };
         bool show = sel != null && !ir.IsEmpty;
@@ -764,7 +834,7 @@ public partial class MainWindow : Window
         if (_busy) return;
         if (_pages.Count == 0)
         {
-            MessageBox.Show(this, "There is nothing to save yet. Scan a page first.", "ScanDesk", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, Loc.T("Msg.NothingToSave"), "ScanDesk", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
@@ -772,13 +842,10 @@ public partial class MainWindow : Window
             ? f : Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         var dlg = new SaveFileDialog
         {
-            Title = "Save scan",
+            Title = Loc.T("Save.Title"),
             InitialDirectory = folder,
-            FileName = $"Scan {DateTime.Now:yyyy-MM-dd HHmm}",
-            Filter = "PDF document – all pages in one file (*.pdf)|*.pdf|" +
-                     "JPEG images – one file per page (*.jpg)|*.jpg|" +
-                     "PNG images – one file per page (*.png)|*.png|" +
-                     "TIFF image – all pages in one file (*.tif)|*.tif",
+            FileName = Loc.F("Save.FileName", DateTime.Now.ToString("yyyy-MM-dd HHmm")),
+            Filter = Loc.T("Save.Filter"),
             FilterIndex = Math.Clamp(_settings.SaveFormatIndex, 1, 4),
             AddExtension = true,
             OverwritePrompt = true,
@@ -810,12 +877,12 @@ public partial class MainWindow : Window
                 : pages.Select((_, i) => Path.Combine(dir, $"{name} {i + 1:D3}{ext}")).ToList();
             var existing = imagePaths.Skip(pages.Count == 1 ? 1 : 0).Where(File.Exists).ToList();
             if (existing.Count > 0 && MessageBox.Show(this,
-                    $"{existing.Count} file(s) with these names already exist, e.g.\n{Path.GetFileName(existing[0])}\n\nReplace them?",
-                    "Replace files", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+                    Loc.F("Msg.ReplaceFiles", existing.Count, Path.GetFileName(existing[0])),
+                    Loc.T("ReplaceFiles"), MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
         }
 
-        var progress = new Progress<int>(i => BusyText.Text = $"Saving page {i} of {pages.Count}…");
-        SetBusy(true, "Saving…");
+        var progress = new Progress<int>(i => BusyText.Text = Loc.F("Busy.SavingPage", i, pages.Count));
+        SetBusy(true, Loc.T("Busy.Saving"));
         try
         {
             await Task.Run(() =>
@@ -827,14 +894,14 @@ public partial class MainWindow : Window
             _unsaved = false;
             _lastSavedPath = imagePaths?[0] ?? path;
             SetStatus(imagePaths is { Count: > 1 }
-                ? $"Saved {pages.Count} images to {Path.GetDirectoryName(path)}"
-                : $"Saved {pages.Count} page(s) to {path}");
+                ? Loc.F("Status.SavedImages", pages.Count, Path.GetDirectoryName(path))
+                : Loc.F("Status.SavedPages", pages.Count, path));
             OpenFolderButton.Visibility = Visibility.Visible;
         }
         catch (Exception ex)
         {
-            SetStatus("Saving failed: " + ex.Message);
-            MessageBox.Show(this, "Saving failed:\n\n" + ex.Message, "ScanDesk", MessageBoxButton.OK, MessageBoxImage.Error);
+            SetStatus(Loc.F("Status.SaveFailed", ex.Message));
+            MessageBox.Show(this, Loc.F("Msg.SaveFailed", ex.Message), "ScanDesk", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally { SetBusy(false); }
     }
@@ -863,8 +930,8 @@ public partial class MainWindow : Window
         bool hasSel = PageList.SelectedItems.Count > 0;
         EmptyState.Visibility = hasPages ? Visibility.Collapsed : Visibility.Visible;
         PreviewImage.Visibility = hasPages ? Visibility.Visible : Visibility.Collapsed;
-        PagesHeader.Text = hasPages ? $"Pages ({_pages.Count})" : "Pages";
-        ScanButtonText.Text = hasPages ? "Scan next page" : "Scan page";
+        PagesHeader.Text = hasPages ? Loc.F("PagesCount", _pages.Count) : Loc.T("Pages");
+        ScanButtonText.Text = hasPages ? Loc.T("Scan.Next") : Loc.T("Scan.Page");
 
         ScanButton.IsEnabled = !_busy;
         RefreshButton.IsEnabled = !_busy;
@@ -877,10 +944,18 @@ public partial class MainWindow : Window
         var preview = PreviewPage;
         CropButton.IsEnabled = !_busy && preview != null;
         FitButton.IsEnabled = !_busy && preview != null;
+        RotateButton.IsEnabled = !_busy && hasSel;
         UndoButton.Visibility = preview?.CanUndo == true ? Visibility.Visible : Visibility.Collapsed;
         UndoButton.IsEnabled = !_busy;
-        if (!hasPages) { PreviewTitle.Text = "Preview"; PreviewInfo.Text = ""; }
-        else if (PageList.SelectedItem is ScannedPage p) PreviewTitle.Text = $"Page {p.Number} of {_pages.Count}";
+
+        // Menu bar
+        MainMenu.IsEnabled = !_busy;
+        MenuSave.IsEnabled = MenuClearAll.IsEnabled = hasPages;
+        foreach (var m in new[] { MenuRotateLeft, MenuRotateRight, MenuRotate180, MenuMoveUp, MenuMoveDown, MenuDelete }) m.IsEnabled = hasSel;
+        MenuCrop.IsEnabled = MenuFit.IsEnabled = preview != null;
+        MenuUndo.IsEnabled = preview?.CanUndo == true;
+        if (!hasPages) { PreviewTitle.Text = Loc.T("Preview"); PreviewInfo.Text = ""; }
+        else if (PageList.SelectedItem is ScannedPage p) PreviewTitle.Text = Loc.F("PageOf", p.Number, _pages.Count);
     }
 
     void SaveSettings()
@@ -891,7 +966,6 @@ public partial class MainWindow : Window
         if (TagOf(AreaBox) is { } a) _settings.Area = Enum.Parse<ScanArea>(a);
         if (TagOf(QualityBox) is { } q) _settings.Quality = int.Parse(q);
         if (TagOf(EnhanceBox) is { } en) _settings.Enhance = Enum.Parse<EnhanceMode>(en);
-        if (TagOf(RotateBox) is { } r) _settings.Rotation = int.Parse(r);
         _settings.Brightness = (int)BrightnessSlider.Value;
         _settings.Contrast = (int)ContrastSlider.Value;
         _settings.Deskew = DeskewBox.IsChecked == true;
@@ -915,7 +989,7 @@ public partial class MainWindow : Window
             return;
         }
         if (_unsaved && _pages.Count > 0 && MessageBox.Show(this,
-                $"You have {_pages.Count} scanned page(s) that are not saved. Close anyway?",
+                Loc.F("Msg.CloseUnsaved", _pages.Count),
                 "ScanDesk", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
         {
             e.Cancel = true;

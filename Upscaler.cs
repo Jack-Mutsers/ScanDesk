@@ -3,7 +3,7 @@ using System.Windows.Media.Imaging;
 
 namespace ScanDesk;
 
-public enum PaperSize { A4, Letter }
+public enum PaperSize { A3, A4, A5, A6, Letter, Legal, Photo10x15 }
 
 /// <summary>
 /// Enlarges a page (an A5 scan, a cropped part, a small photo) to fill a full sheet of paper.
@@ -12,10 +12,22 @@ public enum PaperSize { A4, Letter }
 /// </summary>
 public static class Upscaler
 {
-    public static (double W, double H) PaperInches(PaperSize paper) =>
-        paper == PaperSize.Letter ? (8.5, 11) : (210 / 25.4, 297 / 25.4);
+    public static (double W, double H) PaperInches(PaperSize paper) => paper switch
+    {
+        PaperSize.A3 => (297 / 25.4, 420 / 25.4),
+        PaperSize.A5 => (148 / 25.4, 210 / 25.4),
+        PaperSize.A6 => (105 / 25.4, 148 / 25.4),
+        PaperSize.Letter => (8.5, 11),
+        PaperSize.Legal => (8.5, 14),
+        PaperSize.Photo10x15 => (100 / 25.4, 150 / 25.4),
+        _ => (210 / 25.4, 297 / 25.4),
+    };
 
-    public static string PaperName(PaperSize paper) => paper == PaperSize.Letter ? "Letter" : "A4";
+    public static string PaperName(PaperSize paper) => paper switch
+    {
+        PaperSize.Photo10x15 => "10 × 15 cm",
+        _ => paper.ToString(),
+    };
 
     /// <summary>
     /// Scales the image to fit the paper (keeping its proportions), centered on a white sheet.

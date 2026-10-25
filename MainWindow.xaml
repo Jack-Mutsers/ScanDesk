@@ -13,6 +13,58 @@
         <CommandBinding Command="ApplicationCommands.Save" Executed="Save_Click"/>
     </Window.CommandBindings>
 
+    <DockPanel>
+        <Menu x:Name="MainMenu" DockPanel.Dock="Top" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1"
+              Padding="6,2" FontSize="13">
+            <MenuItem Header="{DynamicResource Menu.File}">
+                <MenuItem x:Name="MenuImport" Header="{DynamicResource Import.Button}" InputGestureText="Ctrl+O" Click="Import_Click"/>
+                <MenuItem x:Name="MenuSave" Header="{DynamicResource Save.Button}" InputGestureText="Ctrl+S" Click="Save_Click"/>
+                <Separator/>
+                <MenuItem x:Name="MenuClearAll" Header="{DynamicResource ClearAll}" Click="ClearAll_Click"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Menu.Exit}" InputGestureText="Alt+F4" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Menu.Scanner}">
+                <MenuItem x:Name="MenuScan" Header="{DynamicResource Scan.Page}" InputGestureText="Ctrl+Enter" Click="Scan_Click"/>
+                <MenuItem x:Name="MenuRefresh" Header="{DynamicResource Refresh.Tooltip}" InputGestureText="F5" Click="Refresh_Click"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Menu.ManageScanners}" Click="Manage_Click"/>
+            </MenuItem>
+            <MenuItem x:Name="MenuPage" Header="{DynamicResource Menu.Page}">
+                <MenuItem x:Name="MenuUndo" Header="{DynamicResource Undo}" InputGestureText="Ctrl+Z" Click="Undo_Click"/>
+                <Separator/>
+                <MenuItem x:Name="MenuRotateLeft" Header="{DynamicResource RotateLeft}" InputGestureText="Ctrl+L" Click="RotateLeft_Click"/>
+                <MenuItem x:Name="MenuRotateRight" Header="{DynamicResource RotateRight}" InputGestureText="Ctrl+R" Click="RotateRight_Click"/>
+                <MenuItem x:Name="MenuRotate180" Header="{DynamicResource Rotate180}" Click="Rotate180_Click"/>
+                <MenuItem x:Name="MenuCrop" Header="{DynamicResource Crop}" Click="Crop_Click"/>
+                <MenuItem x:Name="MenuFit" Header="{DynamicResource Fit.Button}">
+                    <MenuItem Header="{DynamicResource Area.A3}" Tag="A3" Click="FitPaper_Click"/>
+                    <MenuItem Header="{DynamicResource Area.A4}" Tag="A4" Click="FitPaper_Click"/>
+                    <MenuItem Header="{DynamicResource Area.A5}" Tag="A5" Click="FitPaper_Click"/>
+                    <MenuItem Header="{DynamicResource Area.A6}" Tag="A6" Click="FitPaper_Click"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource Area.Letter}" Tag="Letter" Click="FitPaper_Click"/>
+                    <MenuItem Header="{DynamicResource Area.Legal}" Tag="Legal" Click="FitPaper_Click"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource Area.Photo}" Tag="Photo10x15" Click="FitPaper_Click"/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem x:Name="MenuMoveUp" Header="{DynamicResource MoveUp}" Click="MoveUp_Click"/>
+                <MenuItem x:Name="MenuMoveDown" Header="{DynamicResource MoveDown}" Click="MoveDown_Click"/>
+                <MenuItem x:Name="MenuDelete" Header="{DynamicResource Menu.DeletePage}" InputGestureText="Del" Click="Delete_Click"/>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Menu.Tools}">
+                <MenuItem Header="{DynamicResource Menu.Settings}" InputGestureText="Ctrl+," Click="Settings_Click"/>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Menu.Help}">
+                <MenuItem Header="{DynamicResource CheckUpdates}" Click="CheckUpdates_Click"/>
+                <MenuItem Header="{DynamicResource Update.WhatsNew}" Click="Releases_Click"/>
+                <MenuItem Header="{DynamicResource Menu.Privacy}" Click="Privacy_Click"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Menu.About}" Click="About_Click"/>
+            </MenuItem>
+        </Menu>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
@@ -24,24 +76,19 @@
         <Border Grid.Column="0" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
             <DockPanel Margin="22,20,22,20">
                 <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
-                    <TextBlock Text="QUALITY (PDF &amp; JPEG)" Style="{StaticResource FieldLabel}"/>
+                    <TextBlock Text="{DynamicResource Label.Quality}" Style="{StaticResource FieldLabel}"/>
                     <ComboBox x:Name="QualityBox">
-                        <ComboBoxItem Content="Smaller file" Tag="65"/>
-                        <ComboBoxItem Content="Balanced" Tag="85"/>
-                        <ComboBoxItem Content="Best quality" Tag="95"/>
+                        <ComboBoxItem Content="{DynamicResource Quality.Small}" Tag="65"/>
+                        <ComboBoxItem Content="{DynamicResource Quality.Balanced}" Tag="85"/>
+                        <ComboBoxItem Content="{DynamicResource Quality.Best}" Tag="95"/>
                     </ComboBox>
                     <Button x:Name="SaveButton" Style="{StaticResource AccentButton}" Margin="0,14,0,0" Click="Save_Click"
-                            ToolTip="Save all pages (Ctrl+S)">
+                            ToolTip="{DynamicResource Save.Tooltip}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE74E;" FontFamily="{StaticResource IconFont}" FontSize="16" VerticalAlignment="Center"/>
-                            <TextBlock Text="Save as PDF or images…" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource Save.Button}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <TextBlock Margin="0,12,0,0" FontSize="11.5" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center">
-                        <Run x:Name="VersionRun" Text="Version"/>
-                        <Run Text=" · "/>
-                        <Hyperlink x:Name="CheckUpdatesLink" Click="CheckUpdates_Click" Foreground="{StaticResource AccentBrush}">Check for updates</Hyperlink>
-                    </TextBlock>
                 </StackPanel>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,-10,0">
                     <StackPanel Margin="0,0,10,0">
@@ -52,11 +99,11 @@
                             </Border>
                             <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
                                 <TextBlock Text="ScanDesk" FontSize="18" FontWeight="Bold"/>
-                                <TextBlock Text="Scan to PDF or images" Foreground="{StaticResource MutedBrush}" FontSize="12"/>
+                                <TextBlock Text="{DynamicResource App.Subtitle}" Foreground="{StaticResource MutedBrush}" FontSize="12"/>
                             </StackPanel>
                         </StackPanel>
 
-                        <TextBlock Text="SCANNER" Style="{StaticResource FieldLabel}" Margin="0,24,0,5"/>
+                        <TextBlock Text="{DynamicResource Label.Scanner}" Style="{StaticResource FieldLabel}" Margin="0,24,0,5"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -65,90 +112,76 @@
                             </Grid.ColumnDefinitions>
                             <ComboBox x:Name="ScannerBox"/>
                             <Button Grid.Column="1" x:Name="RefreshButton" Style="{StaticResource IconButton}" Margin="6,0,0,0"
-                                    Content="&#xE72C;" ToolTip="Search for scanners again" Click="Refresh_Click"/>
+                                    Content="&#xE72C;" ToolTip="{DynamicResource Refresh.Tooltip}" Click="Refresh_Click"/>
                             <Button Grid.Column="2" x:Name="ManageButton" Style="{StaticResource IconButton}" Margin="6,0,0,0"
-                                    Content="&#xE713;" ToolTip="Manage scanners: choose a default, remove scanners from the list" Click="Manage_Click"/>
+                                    Content="&#xE713;" ToolTip="{DynamicResource Manage.Tooltip}" Click="Manage_Click"/>
                         </Grid>
                         <TextBlock x:Name="ScannerHint" Foreground="{StaticResource MutedBrush}" FontSize="11.5" TextWrapping="Wrap"
                                    Margin="0,5,0,0" Visibility="Collapsed"/>
 
-                        <TextBlock Text="COLOR" Style="{StaticResource FieldLabel}"/>
+                        <TextBlock Text="{DynamicResource Label.Color}" Style="{StaticResource FieldLabel}"/>
                         <ComboBox x:Name="ColorBox">
-                            <ComboBoxItem Content="Color" Tag="Color"/>
-                            <ComboBoxItem Content="Grayscale" Tag="Grayscale"/>
-                            <ComboBoxItem Content="Black &amp; white (text)" Tag="BlackWhite"/>
+                            <ComboBoxItem Content="{DynamicResource Color.Color}" Tag="Color"/>
+                            <ComboBoxItem Content="{DynamicResource Color.Gray}" Tag="Grayscale"/>
+                            <ComboBoxItem Content="{DynamicResource Color.BW}" Tag="BlackWhite"/>
                         </ComboBox>
 
-                        <TextBlock Text="RESOLUTION" Style="{StaticResource FieldLabel}"/>
+                        <TextBlock Text="{DynamicResource Label.Resolution}" Style="{StaticResource FieldLabel}"/>
                         <ComboBox x:Name="DpiBox">
-                            <ComboBoxItem Content="100 dpi – fast preview" Tag="100"/>
-                            <ComboBoxItem Content="150 dpi – screen" Tag="150"/>
-                            <ComboBoxItem Content="200 dpi – documents" Tag="200"/>
-                            <ComboBoxItem Content="300 dpi – recommended" Tag="300"/>
-                            <ComboBoxItem Content="600 dpi – photos, high detail" Tag="600"/>
-                            <ComboBoxItem Content="1200 dpi – very slow" Tag="1200"/>
+                            <ComboBoxItem Content="{DynamicResource Dpi.100}" Tag="100"/>
+                            <ComboBoxItem Content="{DynamicResource Dpi.150}" Tag="150"/>
+                            <ComboBoxItem Content="{DynamicResource Dpi.200}" Tag="200"/>
+                            <ComboBoxItem Content="{DynamicResource Dpi.300}" Tag="300"/>
+                            <ComboBoxItem Content="{DynamicResource Dpi.600}" Tag="600"/>
+                            <ComboBoxItem Content="{DynamicResource Dpi.1200}" Tag="1200"/>
                         </ComboBox>
 
-                        <TextBlock Text="SCAN AREA" Style="{StaticResource FieldLabel}"/>
+                        <TextBlock Text="{DynamicResource Label.Area}" Style="{StaticResource FieldLabel}"/>
                         <ComboBox x:Name="AreaBox">
-                            <ComboBoxItem Content="A4 (210 × 297 mm)" Tag="A4"/>
-                            <ComboBoxItem Content="Letter (8.5 × 11 in)" Tag="Letter"/>
-                            <ComboBoxItem Content="A5 (148 × 210 mm)" Tag="A5"/>
-                            <ComboBoxItem Content="Photo (10 × 15 cm)" Tag="Photo10x15"/>
-                            <ComboBoxItem Content="Whole scanner glass" Tag="FullGlass"/>
+                            <ComboBoxItem Content="{DynamicResource Area.A4}" Tag="A4"/>
+                            <ComboBoxItem Content="{DynamicResource Area.Letter}" Tag="Letter"/>
+                            <ComboBoxItem Content="{DynamicResource Area.A5}" Tag="A5"/>
+                            <ComboBoxItem Content="{DynamicResource Area.Photo}" Tag="Photo10x15"/>
+                            <ComboBoxItem Content="{DynamicResource Area.Full}" Tag="FullGlass"/>
                         </ComboBox>
 
-                        <TextBlock Text="IMAGE CORRECTION" Style="{StaticResource FieldLabel}"/>
+                        <TextBlock Text="{DynamicResource Label.Correction}" Style="{StaticResource FieldLabel}"/>
                         <ComboBox x:Name="EnhanceBox">
-                            <ComboBoxItem Content="Document – sharp text, white paper" Tag="Document"/>
-                            <ComboBoxItem Content="Photo – natural colors" Tag="Photo"/>
-                            <ComboBoxItem Content="Off – raw scanner output" Tag="Off"/>
-                        </ComboBox>
-
-                        <TextBlock Text="ROTATE" Style="{StaticResource FieldLabel}"/>
-                        <ComboBox x:Name="RotateBox">
-                            <ComboBoxItem Content="0°" Tag="0"/>
-                            <ComboBoxItem Content="90° clockwise" Tag="90"/>
-                            <ComboBoxItem Content="180°" Tag="180"/>
-                            <ComboBoxItem Content="90° counter-clockwise" Tag="270"/>
+                            <ComboBoxItem Content="{DynamicResource Correction.Document}" Tag="Document"/>
+                            <ComboBoxItem Content="{DynamicResource Correction.Photo}" Tag="Photo"/>
+                            <ComboBoxItem Content="{DynamicResource Correction.Off}" Tag="Off"/>
                         </ComboBox>
 
                         <CheckBox x:Name="DeskewBox" Margin="0,12,0,0" VerticalContentAlignment="Center">
-                            <TextBlock Text="Straighten crooked pages automatically" TextWrapping="Wrap"/>
+                            <TextBlock Text="{DynamicResource Deskew}" TextWrapping="Wrap"/>
                         </CheckBox>
 
-                        <Expander Header="Advanced" Margin="0,14,0,0" Foreground="{StaticResource MutedBrush}" FontWeight="SemiBold" FontSize="12">
+                        <Expander Header="{DynamicResource Advanced}" Margin="0,14,0,0" Foreground="{StaticResource MutedBrush}" FontWeight="SemiBold" FontSize="12">
                             <StackPanel Margin="0,6,0,0" TextElement.FontWeight="Normal" TextElement.Foreground="{StaticResource TextBrush}">
                                 <DockPanel Margin="0,4,0,0">
                                     <TextBlock DockPanel.Dock="Right" Text="{Binding Value, ElementName=BrightnessSlider, StringFormat={}{0:+0;-0;0}}" Width="28" TextAlignment="Right"/>
-                                    <TextBlock Text="Brightness"/>
+                                    <TextBlock Text="{DynamicResource Brightness}"/>
                                 </DockPanel>
                                 <Slider x:Name="BrightnessSlider" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="5"/>
                                 <DockPanel Margin="0,8,0,0">
                                     <TextBlock DockPanel.Dock="Right" Text="{Binding Value, ElementName=ContrastSlider, StringFormat={}{0:+0;-0;0}}" Width="28" TextAlignment="Right"/>
-                                    <TextBlock Text="Contrast"/>
+                                    <TextBlock Text="{DynamicResource Contrast}"/>
                                 </DockPanel>
                                 <Slider x:Name="ContrastSlider" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="5"/>
                                 <Button Style="{StaticResource SoftButton}" Height="26" FontSize="12" HorizontalAlignment="Left" Margin="0,8,0,0"
-                                        Content="Reset" Click="ResetAdvanced_Click"/>
+                                        Content="{DynamicResource Reset}" Click="ResetAdvanced_Click"/>
                             </StackPanel>
                         </Expander>
 
                         <Button x:Name="ScanButton" Style="{StaticResource AccentButton}" Margin="0,24,0,0" Click="Scan_Click">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE8FE;" FontFamily="{StaticResource IconFont}" FontSize="16" VerticalAlignment="Center"/>
-                                <TextBlock x:Name="ScanButtonText" Text="Scan page" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="ScanButtonText" Text="{DynamicResource Scan.Page}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
-                        <TextBlock Text="Place the next page on the glass and press Scan again to add more pages."
+                        <TextBlock Text="{DynamicResource Scan.Hint}"
                                    Foreground="{StaticResource MutedBrush}" FontSize="11.5" TextWrapping="Wrap" Margin="0,8,0,0"/>
 
-                        <Button Style="{StaticResource SoftButton}" Margin="0,16,0,0" Click="Import_Click" x:Name="ImportButton">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="&#xE8E5;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
-                                <TextBlock Text="Add images from PC…" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
                     </StackPanel>
                 </ScrollViewer>
             </DockPanel>
@@ -167,15 +200,15 @@
                     Padding="14,10" Margin="0,0,0,14" Visibility="Collapsed">
                 <DockPanel>
                     <StackPanel x:Name="UpdateButtons" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Style="{StaticResource SoftButton}" Height="30" Content="What's new" Click="UpdateNotes_Click"/>
-                        <Button Style="{StaticResource SoftButton}" Height="30" Margin="6,0,0,0" Content="Later" Click="UpdateLater_Click"/>
+                        <Button Style="{StaticResource SoftButton}" Height="30" Content="{DynamicResource Update.WhatsNew}" Click="UpdateNotes_Click"/>
+                        <Button Style="{StaticResource SoftButton}" Height="30" Margin="6,0,0,0" Content="{DynamicResource Update.Later}" Click="UpdateLater_Click"/>
                         <Button x:Name="InstallUpdateButton" Style="{StaticResource AccentButton}" Height="30" FontSize="13" Width="124"
-                                Margin="6,0,0,0" Content="Install update" Click="InstallUpdate_Click"/>
+                                Margin="6,0,0,0" Content="{DynamicResource Update.Install}" Click="InstallUpdate_Click"/>
                     </StackPanel>
                     <TextBlock Text="&#xE896;" FontFamily="{StaticResource IconFont}" FontSize="18" Foreground="{StaticResource AccentBrush}"
                                VerticalAlignment="Center" Margin="0,0,12,0"/>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock x:Name="UpdateTitle" FontWeight="SemiBold" Text="A new version of ScanDesk is available"/>
+                        <TextBlock x:Name="UpdateTitle" FontWeight="SemiBold" Text=""/>
                         <TextBlock x:Name="UpdateDetail" Foreground="{StaticResource MutedBrush}" FontSize="12" TextTrimming="CharacterEllipsis"/>
                         <ProgressBar x:Name="UpdateProgress" Height="4" Margin="0,6,0,0" Maximum="1" Visibility="Collapsed"
                                      Foreground="{StaticResource AccentBrush}" Background="#DBEAFE" BorderThickness="0"/>
@@ -186,50 +219,69 @@
             <Grid Grid.Row="1" Margin="2,0,2,12" MinHeight="32">
                 <DockPanel x:Name="NormalHeader">
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                        <TextBlock x:Name="PreviewInfo" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="0,0,14,0"/>
-                        <Button x:Name="UndoButton" Style="{StaticResource SoftButton}" Height="32" Click="Undo_Click" Visibility="Collapsed"
-                                ToolTip="Undo the last crop or rotation of this page (Ctrl+Z)">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="&#xE7A7;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
-                                <TextBlock Text="Undo" Margin="6,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button x:Name="FitButton" Style="{StaticResource SoftButton}" Height="32" Margin="8,0,0,0" Click="Fit_Click"
-                                ToolTip="Enlarge the page to fill a full sheet, with sharp, high-quality resizing">
+                        <Button x:Name="UndoButton" Style="{StaticResource IconButton}" Height="32" Width="32" Click="Undo_Click" Visibility="Collapsed"
+                                Content="&#xE7A7;" ToolTip="{DynamicResource Undo.Tooltip}"/>
+                        <Button x:Name="RotateButton" Style="{StaticResource SoftButton}" Height="32" Margin="8,0,0,0" Click="DropDown_Click"
+                                ToolTip="{DynamicResource Rotate.Tooltip}">
                             <Button.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Fit to A4 (210 × 297 mm)" Tag="A4" Click="FitPaper_Click"/>
-                                    <MenuItem Header="Fit to Letter (8.5 × 11 in)" Tag="Letter" Click="FitPaper_Click"/>
+                                    <MenuItem Header="{DynamicResource RotateLeft}" InputGestureText="Ctrl+L" Click="RotateLeft_Click"/>
+                                    <MenuItem Header="{DynamicResource RotateRight}" InputGestureText="Ctrl+R" Click="RotateRight_Click"/>
+                                    <MenuItem Header="{DynamicResource Rotate180}" Click="Rotate180_Click"/>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE7AD;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Rotate.Button}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="&#xE70D;" FontFamily="{StaticResource IconFont}" FontSize="9" Margin="6,1,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="FitButton" Style="{StaticResource SoftButton}" Height="32" Margin="8,0,0,0" Click="DropDown_Click"
+                                ToolTip="{DynamicResource Fit.Tooltip}">
+                            <Button.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="{DynamicResource Area.A3}" Tag="A3" Click="FitPaper_Click"/>
+                                    <MenuItem Header="{DynamicResource Area.A4}" Tag="A4" Click="FitPaper_Click"/>
+                                    <MenuItem Header="{DynamicResource Area.A5}" Tag="A5" Click="FitPaper_Click"/>
+                                    <MenuItem Header="{DynamicResource Area.A6}" Tag="A6" Click="FitPaper_Click"/>
+                                    <Separator/>
+                                    <MenuItem Header="{DynamicResource Area.Letter}" Tag="Letter" Click="FitPaper_Click"/>
+                                    <MenuItem Header="{DynamicResource Area.Legal}" Tag="Legal" Click="FitPaper_Click"/>
+                                    <Separator/>
+                                    <MenuItem Header="{DynamicResource Area.Photo}" Tag="Photo10x15" Click="FitPaper_Click"/>
                                 </ContextMenu>
                             </Button.ContextMenu>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE740;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
-                                <TextBlock Text="Fit to page" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Fit.Button}" Margin="6,0,0,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="&#xE70D;" FontFamily="{StaticResource IconFont}" FontSize="9" Margin="6,1,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button x:Name="CropButton" Style="{StaticResource SoftButton}" Height="32" Margin="8,0,0,0" Click="Crop_Click"
-                                ToolTip="Select part of this page to keep">
+                                ToolTip="{DynamicResource Crop.Tooltip}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE7A8;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
-                                <TextBlock Text="Crop" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Crop}" Margin="6,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
-                    <TextBlock x:Name="PreviewTitle" Text="Preview" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                        <TextBlock x:Name="PreviewTitle" Text="{DynamicResource Preview}" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock x:Name="PreviewInfo" Foreground="{StaticResource MutedBrush}" FontSize="11.5" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
                 </DockPanel>
                 <DockPanel x:Name="CropHeader" Visibility="Collapsed">
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                        <Button Style="{StaticResource SoftButton}" Height="32" Content="Cancel" Click="CropCancel_Click" ToolTip="Stop cropping (Esc)"/>
+                        <Button Style="{StaticResource SoftButton}" Height="32" Content="{DynamicResource Cancel}" Click="CropCancel_Click" ToolTip="{DynamicResource Crop.CancelTooltip}"/>
                         <Button x:Name="ApplyCropButton" Style="{StaticResource AccentButton}" Height="32" FontSize="13" Width="120" Margin="8,0,0,0"
-                                Click="CropApply_Click" ToolTip="Keep only the selected part (Enter)">
+                                Click="CropApply_Click" ToolTip="{DynamicResource Crop.ApplyTooltip}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE73E;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
-                                <TextBlock Text="Apply crop" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Crop.Apply}" Margin="8,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
-                    <TextBlock x:Name="CropHint" Text="Drag over the part of the page you want to keep" FontSize="14" FontWeight="SemiBold"
+                    <TextBlock x:Name="CropHint" Text="{DynamicResource Crop.HintStart}" FontSize="14" FontWeight="SemiBold"
                                VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
                 </DockPanel>
             </Grid>
@@ -259,17 +311,17 @@
                     <StackPanel x:Name="EmptyState" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="&#xE8FE;" FontFamily="{StaticResource IconFont}" FontSize="48" Foreground="#9CA3AF"
                                    HorizontalAlignment="Center"/>
-                        <TextBlock Text="No pages yet" FontSize="17" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,14,0,4"/>
-                        <TextBlock Text="Put a document on the scanner glass and press Scan page." Foreground="{StaticResource MutedBrush}"
+                        <TextBlock Text="{DynamicResource Empty.Title}" FontSize="17" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,14,0,4"/>
+                        <TextBlock Text="{DynamicResource Empty.Line1}" Foreground="{StaticResource MutedBrush}"
                                    HorizontalAlignment="Center"/>
-                        <TextBlock Text="You can also drag image files into this window." Foreground="{StaticResource MutedBrush}"
+                        <TextBlock Text="{DynamicResource Empty.Line2}" Foreground="{StaticResource MutedBrush}"
                                    HorizontalAlignment="Center" Margin="0,2,0,0"/>
                     </StackPanel>
                     <Border x:Name="BusyOverlay" Background="#B3F3F4F6" Visibility="Collapsed">
                         <Border Background="White" CornerRadius="10" Padding="26,20" HorizontalAlignment="Center" VerticalAlignment="Center"
                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                             <StackPanel Width="260">
-                                <TextBlock x:Name="BusyText" Text="Scanning…" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="BusyText" Text="{DynamicResource Busy.Scanning}" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Center"/>
                                 <ProgressBar IsIndeterminate="True" Height="4" Margin="0,14,0,0" Foreground="{StaticResource AccentBrush}"
                                              BorderThickness="0" Background="#E5E7EB"/>
                             </StackPanel>
@@ -280,9 +332,9 @@
 
             <DockPanel Grid.Row="3" Margin="2,12,2,0" x:Name="StatusBar">
                 <Button x:Name="OpenFolderButton" DockPanel.Dock="Right" Style="{StaticResource SoftButton}" Height="28"
-                        Content="Open folder" Visibility="Collapsed" Click="OpenFolder_Click"/>
+                        Content="{DynamicResource OpenFolder}" Visibility="Collapsed" Click="OpenFolder_Click"/>
                 <TextBlock x:Name="StatusText" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                           Text="Ready."/>
+                           Text="{DynamicResource Ready}"/>
             </DockPanel>
         </Grid>
 
@@ -291,22 +343,29 @@
             <DockPanel Margin="14,20,14,14">
                 <DockPanel DockPanel.Dock="Top" Margin="2,0,0,10">
                     <Button DockPanel.Dock="Right" Style="{StaticResource SoftButton}" Height="26" Padding="10,0" FontSize="12"
-                            Content="Clear all" Click="ClearAll_Click" x:Name="ClearButton"/>
-                    <TextBlock x:Name="PagesHeader" Text="Pages" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            Content="{DynamicResource ClearAll}" Click="ClearAll_Click" x:Name="ClearButton"/>
+                    <TextBlock x:Name="PagesHeader" Text="{DynamicResource Pages}" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
                 </DockPanel>
 
                 <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="0,10,0,0">
-                    <Button Style="{StaticResource IconButton}" Content="&#xE70E;" ToolTip="Move page up" Click="MoveUp_Click" x:Name="UpButton"/>
-                    <Button Style="{StaticResource IconButton}" Content="&#xE70D;" ToolTip="Move page down" Click="MoveDown_Click" x:Name="DownButton"/>
-                    <Button Style="{StaticResource IconButton}" ToolTip="Rotate left" Click="RotateLeft_Click" x:Name="RotLeftButton">
+                    <Button Style="{StaticResource IconButton}" Content="&#xE70E;" ToolTip="{DynamicResource MoveUp}" Click="MoveUp_Click" x:Name="UpButton"/>
+                    <Button Style="{StaticResource IconButton}" Content="&#xE70D;" ToolTip="{DynamicResource MoveDown}" Click="MoveDown_Click" x:Name="DownButton"/>
+                    <Button Style="{StaticResource IconButton}" ToolTip="{DynamicResource RotateLeft}" Click="RotateLeft_Click" x:Name="RotLeftButton">
                         <TextBlock Text="&#xE7AD;" RenderTransformOrigin="0.5,0.5">
                             <TextBlock.RenderTransform><ScaleTransform ScaleX="-1"/></TextBlock.RenderTransform>
                         </TextBlock>
                     </Button>
-                    <Button Style="{StaticResource IconButton}" Content="&#xE7AD;" ToolTip="Rotate right" Click="RotateRight_Click" x:Name="RotRightButton"/>
-                    <Button Style="{StaticResource IconButton}" Content="&#xE74D;" ToolTip="Delete page (Del)" Click="Delete_Click" x:Name="DeleteButton"
+                    <Button Style="{StaticResource IconButton}" Content="&#xE7AD;" ToolTip="{DynamicResource RotateRight}" Click="RotateRight_Click" x:Name="RotRightButton"/>
+                    <Button Style="{StaticResource IconButton}" Content="&#xE74D;" ToolTip="{DynamicResource DeletePage}" Click="Delete_Click" x:Name="DeleteButton"
                             Foreground="#DC2626"/>
                 </UniformGrid>
+                <Button DockPanel.Dock="Bottom" Style="{StaticResource SoftButton}" Margin="0,8,0,0" Click="Import_Click" x:Name="ImportButton"
+                        ToolTip="{DynamicResource Import.Button}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE710;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Import.Short}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
 
                 <ListBox x:Name="PageList" BorderThickness="0" SelectionMode="Extended" HorizontalContentAlignment="Stretch"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="PageList_SelectionChanged"
@@ -343,8 +402,9 @@
                                 <Border Background="White" HorizontalAlignment="Center" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                                     <Image Source="{Binding Thumbnail}" MaxHeight="200" Stretch="Uniform"/>
                                 </Border>
-                                <TextBlock Text="{Binding Number, StringFormat='Page {0}'}" HorizontalAlignment="Center" Margin="0,6,0,0"
-                                           FontSize="12" Foreground="{StaticResource MutedBrush}"/>
+                                <TextBlock HorizontalAlignment="Center" Margin="0,6,0,0" FontSize="12" Foreground="{StaticResource MutedBrush}">
+                                    <Run Text="{DynamicResource Page}"/> <Run Text="{Binding Number, Mode=OneWay}"/>
+                                </TextBlock>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -352,4 +412,5 @@
             </DockPanel>
         </Border>
     </Grid>
+    </DockPanel>
 </Window>

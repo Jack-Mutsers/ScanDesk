@@ -11,7 +11,10 @@
     <ApplicationIcon>Assets\ScanDesk.ico</ApplicationIcon>
     <!-- Release versions come from git tags via the GitHub pipeline (-p:Version=x.y.z). -->
     <Version>0.0.0-local</Version>
+    <!-- Keep the product version exactly "x.y.z" (no "+commit" suffix), as code signing requires identical versions. -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>ScanDesk</Product>
+    <Copyright>Copyright © 2026 Jack Mutsers. Licensed under GPL-3.0.</Copyright>
     <Description>Simple scanning to PDF and images</Description>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>

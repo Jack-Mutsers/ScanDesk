@@ -5,6 +5,8 @@ namespace ScanDesk;
 
 public sealed class AppSettings
 {
+    public string Language { get; set; } = Loc.DefaultLanguage;
+    public bool AutoCheckUpdates { get; set; } = true;
     public string? ScannerId { get; set; }          // last used
     public string? DefaultScannerId { get; set; }
     public List<string> HiddenScannerIds { get; set; } = [];
@@ -13,7 +15,6 @@ public sealed class AppSettings
     public ScanArea Area { get; set; } = ScanArea.A4;
     public int Quality { get; set; } = 85;
     public EnhanceMode Enhance { get; set; } = EnhanceMode.Document;
-    public int Rotation { get; set; }
     public int Brightness { get; set; }
     public int Contrast { get; set; }
     public bool Deskew { get; set; } = true;
