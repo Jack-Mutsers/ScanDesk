@@ -26,6 +26,9 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         PageList.ItemsSource = _pages;
+        VersionRun.Text = UpdateChecker.CurrentVersion != null
+            ? $"Version {UpdateChecker.CurrentVersionText}"
+            : "Development build";
         _pages.CollectionChanged += (_, _) => { Renumber(); UpdateUi(); };
 
         SelectByTag(ColorBox, _settings.Color.ToString());
@@ -45,6 +48,7 @@ public partial class MainWindow : Window
             var files = Environment.GetCommandLineArgs().Skip(1).Where(File.Exists).ToList();
             if (files.Count > 0) await ImportAsync(files);
             await RefreshScannersAsync();
+            await CheckForUpdatesAsync(manual: false);
         };
         UpdateUi();
     }
@@ -440,6 +444,87 @@ public partial class MainWindow : Window
         }
         finally { SetBusy(false); }
         ShowPreview();
+    }
+
+    // ---------- Updates ----------
+
+    UpdateInfo? _update;
+
+    /// <summary>Looks for a newer release on GitHub. Automatic checks stay silent when offline or up to date.</summary>
+    async Task CheckForUpdatesAsync(bool manual)
+    {
+        if (!manual && UpdateChecker.CurrentVersion == null) return; // local builds don't nag
+        if (manual) SetStatus("Checking for updates…");
+        try
+        {
+            var update = await UpdateChecker.CheckAsync();
+            if (update != null) ShowUpdate(update);
+            else if (manual) SetStatus($"You have the latest version ({UpdateChecker.CurrentVersionText}).");
+        }
+        catch (Exception ex)
+        {
+            if (manual) SetStatus("Could not check for updates: " + ex.Message);
+        }
+    }
+
+    async void CheckUpdates_Click(object sender, RoutedEventArgs e) => await CheckForUpdatesAsync(manual: true);
+
+    void ShowUpdate(UpdateInfo update)
+    {
+        _update = update;
+        UpdateTitle.Text = $"ScanDesk {update.Version} is available";
+        UpdateDetail.Text = UpdateChecker.CurrentVersion != null
+            ? $"You have {UpdateChecker.CurrentVersionText}. Settings are kept; ScanDesk reopens by itself."
+            : "Your settings are kept and ScanDesk reopens by itself.";
+        UpdateProgress.Visibility = Visibility.Collapsed;
+        UpdateButtons.IsEnabled = true;
+        UpdateBanner.Visibility = Visibility.Visible;
+    }
+
+    void UpdateLater_Click(object sender, RoutedEventArgs e) => UpdateBanner.Visibility = Visibility.Collapsed;
+
+    void UpdateNotes_Click(object sender, RoutedEventArgs e)
+    {
+        if (_update != null) UpdateChecker.OpenInBrowser(_update.PageUrl);
+    }
+
+    async void InstallUpdate_Click(object sender, RoutedEventArgs e)
+    {
+        if (_update is not { } update || _busy) return;
+        if (_unsaved && _pages.Count > 0 && MessageBox.Show(this,
+                $"You have {_pages.Count} page(s) that are not saved. Installing the update closes ScanDesk and they will be lost.\n\nInstall anyway?",
+                "Install update", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
+
+        UpdateButtons.IsEnabled = false;
+        UpdateProgress.Value = 0;
+        UpdateProgress.Visibility = Visibility.Visible;
+        UpdateTitle.Text = $"Downloading ScanDesk {update.Version}…";
+        double totalMb = update.Size / 1048576.0;
+        try
+        {
+            string installer = await UpdateChecker.DownloadAsync(update, new Progress<double>(p =>
+            {
+                UpdateProgress.Value = p;
+                UpdateDetail.Text = $"{p * totalMb:0.0} of {totalMb:0.0} MB";
+            }));
+
+            UpdateTitle.Text = $"Installing ScanDesk {update.Version}…";
+            UpdateDetail.Text = "Approve the Windows prompt. ScanDesk closes and reopens when the update is done.";
+            if (!UpdateChecker.LaunchInstaller(installer))
+            {
+                ShowUpdate(update);
+                SetStatus("Update cancelled.");
+                return;
+            }
+            _unsaved = false; // already confirmed above
+            Application.Current.Shutdown();
+        }
+        catch (Exception ex)
+        {
+            ShowUpdate(update);
+            SetStatus("Update failed: " + ex.Message);
+            MessageBox.Show(this, "The update could not be installed:\n\n" + ex.Message, "ScanDesk", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     // ---------- Fit to page ----------

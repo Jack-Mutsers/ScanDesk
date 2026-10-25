@@ -16,6 +16,8 @@ A simple Windows 11 scanner app: scan several pages from any WIA scanner (Epson,
 
 Get the latest `ScanDesk-Setup-x.y.z.exe` from [Releases](https://github.com/Jack-Mutsers/ScanDesk/releases). It includes everything it needs; no separate .NET install required.
 
+From version 1.0.3 on, ScanDesk checks for new releases when it starts (or via **Check for updates** in the bottom-left corner). **Install update** downloads the installer, verifies its SHA-256 checksum against the one GitHub publishes, installs it silently and reopens ScanDesk.
+
 ## Building
 
 Requires the .NET 10 SDK and [Inno Setup 6](https://jrsoftware.org/isinfo.php).
