@@ -18,6 +18,7 @@ ScanDesk works entirely on your own PC. It has no accounts, no advertising and n
 | When you click *Check for updates* | `api.github.com` | The same request as above. |
 | When you click *Install update* | `github.com` | The installer download. |
 | When you click *What's new* | your web browser opens `github.com` | Normal web browsing. |
+| When you click a driver link in *Settings → Scanners* | your web browser opens the manufacturer's website, or a DuckDuckGo search limited to that website | Normal web browsing; the search contains the model name. |
 
 GitHub's handling of this data is described in the [GitHub General Privacy Statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
 
@@ -39,6 +40,7 @@ ScanDesk werkt volledig op je eigen pc. Er zijn geen accounts, geen advertenties
 | Als je op *Controleren op updates* klikt | `api.github.com` | Dezelfde vraag als hierboven. |
 | Als je op *Update installeren* klikt | `github.com` | Het downloaden van het installatieprogramma. |
 | Als je op *Wat is er nieuw* klikt | je webbrowser opent `github.com` | Gewoon surfen. |
+| Als je op een driverlink klikt in *Instellingen → Scanners* | je webbrowser opent de website van de fabrikant, of een DuckDuckGo-zoekopdracht binnen die website | Gewoon surfen; de zoekopdracht bevat de modelnaam. |
 
 Hoe GitHub met deze gegevens omgaat, staat in de [GitHub General Privacy Statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
 

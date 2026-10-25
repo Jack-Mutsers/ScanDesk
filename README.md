@@ -5,6 +5,7 @@ A simple Windows 11 scanner app: scan several pages from any WIA scanner (Epson,
 ## Features
 
 - Finds scanners automatically (USB and network); pick a default scanner and hide ones you don't use
+- Recognises the brand and model of your scanners and printers and links to the manufacturer's official driver and software pages (also for printers whose scanner software is missing)
 - Color, grayscale or black & white; 100–1200 dpi; A4, Letter, A5, photo or the whole glass
 - Image correction like Epson Scan 2: deep blacks, white paper, sharper text (Document / Photo / Off)
 - Straightens crooked pages automatically

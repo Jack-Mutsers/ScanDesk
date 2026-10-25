@@ -128,7 +128,7 @@
     <sys:String x:Key="Status.SaveFailed">Opslaan mislukt: {0}</sys:String>
 
     <!-- Scannerhints -->
-    <sys:String x:Key="Hint.NoScanner">Geen scanner gevonden. Zet de printer aan, verbind hem via USB of wifi en klik op vernieuwen.</sys:String>
+    <sys:String x:Key="Hint.NoScanner">Geen scanner gevonden. Zet de printer aan, verbind hem via USB of wifi en klik op vernieuwen. Onder Extra &gt; Instellingen &gt; Scanners vind je links naar de drivers van je printer.</sys:String>
     <sys:String x:Key="Hint.AllHidden">Alle scanners zijn uit de lijst verwijderd. Klik op het tandwiel om er een terug te zetten.</sys:String>
     <sys:String x:Key="Hint.Twice">Je printer kan twee keer in de lijst staan (USB/netwerk). Klik op het tandwiel om een standaardscanner te kiezen of de extra te verwijderen.</sys:String>
     <sys:String x:Key="Hint.Hidden">{0} scanner(s) verborgen. Klik op het tandwiel om ze te tonen.</sys:String>
@@ -209,4 +209,11 @@
     <sys:String x:Key="About.Website">Website (GitHub)</sys:String>
     <sys:String x:Key="About.Releases">Alle versies</sys:String>
     <sys:String x:Key="About.LicenseLink">Licentie</sys:String>
+
+    <!-- Driver links -->
+    <sys:String x:Key="Device.SupportLink">Drivers en software van {0}</sys:String>
+    <sys:String x:Key="Device.SearchLink">‘{0}’ zoeken op {1}</sys:String>
+    <sys:String x:Key="Printers.Title">Printers zonder scanner in ScanDesk</sys:String>
+    <sys:String x:Key="Printers.Hint">Deze printers zijn in Windows geïnstalleerd, maar hun scanner niet. Installeer de scan- of driversoftware van de fabrikant en klik daarna op Opnieuw zoeken.</sys:String>
+    <sys:String x:Key="Printers.Detail">Scanner niet gevonden</sys:String>
 </ResourceDictionary>
