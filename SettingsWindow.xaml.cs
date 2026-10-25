@@ -24,6 +24,7 @@ public partial class SettingsWindow : Window
 {
     readonly ISettingsHost _host;
     List<ManagedScanner> _rows = [];
+    List<DeviceLinks> _printers = [];
     bool _loading = true;
 
     public SettingsWindow(ISettingsHost host, SettingsPage page)
@@ -38,6 +39,7 @@ public partial class SettingsWindow : Window
         VersionText.Text = VersionLabel();
         LoadScanners();
         _loading = false;
+        Loaded += async (_, _) => await LoadPrintersAsync();
 
         (page switch { SettingsPage.Scanners => NavScanners, SettingsPage.About => NavAbout, _ => NavGeneral }).IsChecked = true;
     }
@@ -60,6 +62,7 @@ public partial class SettingsWindow : Window
         _host.SetLanguage(code);
         VersionText.Text = VersionLabel();
         foreach (var row in _rows) row.RefreshText();
+        foreach (var row in _printers) row.RefreshText();
     }
 
     void AutoUpdate_Changed(object sender, RoutedEventArgs e)
@@ -89,6 +92,26 @@ public partial class SettingsWindow : Window
         EmptyText.Visibility = _rows.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
+    /// <summary>Printers of a known brand whose scanner isn't found, with links to the manufacturer's software.</summary>
+    async Task LoadPrintersAsync()
+    {
+        var scanners = _host.Scanners.ToList();
+        var printers = await Task.Run(() => DeviceCatalog.PrintersWithoutScanner(scanners));
+        _printers = printers.Select(p => new DeviceLinks(p.Name, p.Support)).ToList();
+        PrinterList.ItemsSource = _printers;
+        PrinterSection.Visibility = _printers.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    void SupportLink_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkContentElement)?.DataContext is DeviceLinks { Support: { } s }) OpenUrl(s.SupportUrl);
+    }
+
+    void SearchLink_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkContentElement)?.DataContext is DeviceLinks { Support: { } s }) OpenUrl(s.SearchUrl);
+    }
+
     void SaveScanners() => _host.SetScannerVisibility(
         _rows.FirstOrDefault(r => r.IsDefault)?.Info.DeviceId,
         _rows.Where(r => r.IsHidden).Select(r => r.Info.DeviceId),
@@ -114,6 +137,7 @@ public partial class SettingsWindow : Window
         _loading = true;
         LoadScanners();
         _loading = false;
+        await LoadPrintersAsync();
         SearchButton.IsEnabled = true;
     }
 
@@ -134,12 +158,30 @@ public partial class SettingsWindow : Window
     void Close_Click(object sender, RoutedEventArgs e) => Close();
 }
 
-public sealed class ManagedScanner(ScannerInfo info) : INotifyPropertyChanged
+/// <summary>A device row with links to the manufacturer's driver and software pages.</summary>
+public class DeviceLinks(string name, DeviceSupport? support) : INotifyPropertyChanged
+{
+    public string Name { get; } = name;
+    public DeviceSupport? Support { get; } = support;
+    public Visibility LinksVisibility => Support != null ? Visibility.Visible : Visibility.Collapsed;
+    public string SupportText => Support != null ? Loc.F("Device.SupportLink", Support.Brand) : "";
+    public string SearchText => Support != null ? Loc.F("Device.SearchLink", Support.Model, Support.Domain) : "";
+
+    public virtual void RefreshText()
+    {
+        OnChanged(nameof(SupportText));
+        OnChanged(nameof(SearchText));
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnChanged([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+}
+
+public sealed class ManagedScanner(ScannerInfo info) : DeviceLinks(info.Name, DeviceCatalog.Identify(info.Name))
 {
     bool _isDefault, _isHidden;
 
     public ScannerInfo Info { get; } = info;
-    public string Name => Info.Name;
 
     /// <summary>Tells duplicate entries of the same printer apart.</summary>
     public string Detail => Info.DeviceId.StartsWith(@"SWD\Escl", StringComparison.OrdinalIgnoreCase)
@@ -156,8 +198,9 @@ public sealed class ManagedScanner(ScannerInfo info) : INotifyPropertyChanged
 
     public bool IsVisible => !IsHidden;
 
-    public void RefreshText() => OnChanged(nameof(Detail));
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-    void OnChanged([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    public override void RefreshText()
+    {
+        base.RefreshText();
+        OnChanged(nameof(Detail));
+    }
 }

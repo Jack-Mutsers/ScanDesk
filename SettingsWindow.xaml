@@ -138,6 +138,7 @@
                 <TextBlock x:Name="EmptyText" DockPanel.Dock="Top" Style="{StaticResource Hint}" Visibility="Collapsed"
                            Text="{DynamicResource Manage.Empty}"/>
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
+                  <StackPanel>
                     <ItemsControl x:Name="ScannerList">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -152,6 +153,14 @@
                                         <StackPanel x:Name="Info" VerticalAlignment="Center">
                                             <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                                             <TextBlock Text="{Binding Detail}" Foreground="{StaticResource MutedBrush}" FontSize="11.5"/>
+                                            <WrapPanel Margin="0,4,0,0" Visibility="{Binding LinksVisibility}">
+                                                <TextBlock Margin="0,0,14,0" FontSize="12">
+                                                    <Hyperlink Click="SupportLink_Click" Foreground="{StaticResource AccentBrush}"><Run Text="{Binding SupportText, Mode=OneWay}"/></Hyperlink>
+                                                </TextBlock>
+                                                <TextBlock FontSize="12">
+                                                    <Hyperlink Click="SearchLink_Click" Foreground="{StaticResource AccentBrush}"><Run Text="{Binding SearchText, Mode=OneWay}"/></Hyperlink>
+                                                </TextBlock>
+                                            </WrapPanel>
                                         </StackPanel>
                                         <RadioButton Grid.Column="1" GroupName="DefaultScanner" Content="{DynamicResource Manage.Default}"
                                                      VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="14,0"
@@ -172,6 +181,33 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+
+                    <StackPanel x:Name="PrinterSection" Visibility="Collapsed" Margin="0,14,0,0">
+                        <TextBlock Text="{DynamicResource Printers.Title}" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="{DynamicResource Printers.Hint}" Style="{StaticResource Hint}" Margin="0,0,0,10"/>
+                        <ItemsControl x:Name="PrinterList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="14,10" Margin="0,0,0,8"
+                                            Background="#FFFBEB">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{DynamicResource Printers.Detail}" Foreground="{StaticResource MutedBrush}" FontSize="11.5"/>
+                                            <WrapPanel Margin="0,4,0,0" Visibility="{Binding LinksVisibility}">
+                                                <TextBlock Margin="0,0,14,0" FontSize="12">
+                                                    <Hyperlink Click="SupportLink_Click" Foreground="{StaticResource AccentBrush}"><Run Text="{Binding SupportText, Mode=OneWay}"/></Hyperlink>
+                                                </TextBlock>
+                                                <TextBlock FontSize="12">
+                                                    <Hyperlink Click="SearchLink_Click" Foreground="{StaticResource AccentBrush}"><Run Text="{Binding SearchText, Mode=OneWay}"/></Hyperlink>
+                                                </TextBlock>
+                                            </WrapPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                  </StackPanel>
                 </ScrollViewer>
             </DockPanel>
 

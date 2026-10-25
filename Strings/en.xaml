@@ -128,7 +128,7 @@
     <sys:String x:Key="Status.SaveFailed">Saving failed: {0}</sys:String>
 
     <!-- Scanner hints -->
-    <sys:String x:Key="Hint.NoScanner">No scanner found. Switch the printer on, connect it by USB or Wi-Fi, then press refresh.</sys:String>
+    <sys:String x:Key="Hint.NoScanner">No scanner found. Switch the printer on, connect it by USB or Wi-Fi, then press refresh. Tools &gt; Settings &gt; Scanners has links to your printer's drivers.</sys:String>
     <sys:String x:Key="Hint.AllHidden">All scanners are removed from the list. Press the gear button to add one back.</sys:String>
     <sys:String x:Key="Hint.Twice">Your printer may show up twice (USB/network). Use the gear button to pick a default or remove the extra one.</sys:String>
     <sys:String x:Key="Hint.Hidden">{0} scanner(s) hidden. Use the gear button to show them.</sys:String>
@@ -209,4 +209,11 @@
     <sys:String x:Key="About.Website">Website (GitHub)</sys:String>
     <sys:String x:Key="About.Releases">All releases</sys:String>
     <sys:String x:Key="About.LicenseLink">License</sys:String>
+
+    <!-- Driver links -->
+    <sys:String x:Key="Device.SupportLink">{0} drivers and software</sys:String>
+    <sys:String x:Key="Device.SearchLink">Search ‘{0}’ on {1}</sys:String>
+    <sys:String x:Key="Printers.Title">Printers without a scanner in ScanDesk</sys:String>
+    <sys:String x:Key="Printers.Hint">These printers are installed in Windows, but their scanner isn't. Install the manufacturer's scan or driver software, then click Search again.</sys:String>
+    <sys:String x:Key="Printers.Detail">Scanner not found</sys:String>
 </ResourceDictionary>
