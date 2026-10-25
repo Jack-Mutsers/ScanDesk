@@ -51,6 +51,8 @@
     <sys:String x:Key="DevBuild">Development build</sys:String>
     <sys:String x:Key="TestBuild">Test build {0}</sys:String>
     <sys:String x:Key="CheckUpdates">Check for updates</sys:String>
+    <sys:String x:Key="AutoUpdate">Check for updates automatically at startup</sys:String>
+    <sys:String x:Key="AutoUpdate.Tooltip">ScanDesk then asks GitHub at startup whether a new version exists. No scans or personal data are sent.</sys:String>
 
     <!-- Main window: preview -->
     <sys:String x:Key="Update.WhatsNew">What's new</sys:String>

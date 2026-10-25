@@ -1,0 +1,12 @@
+ScanDesk is gratis en opensource (GNU GPL-3.0).
+
+PRIVACY
+
+ScanDesk werkt volledig op je eigen pc. Er zijn geen accounts, geen advertenties en er wordt niet bijgehouden hoe je het programma gebruikt.
+
+- Je scans blijven op je pc. Tijdelijke pagina's worden verwijderd als je ScanDesk afsluit; opgeslagen bestanden komen alleen in de map die jij kiest.
+- ScanDesk maakt alleen verbinding met internet voor updates: bij het starten vraagt het aan GitHub (api.github.com) of er een nieuwe versie is, en als je zelf op "Update installeren" klikt, wordt het installatieprogramma van github.com gedownload. GitHub ontvangt daarbij, zoals bij elke website, je IP-adres. Er wordt niets over jou of je scans verstuurd.
+- Uitzetten: haal linksonder in ScanDesk het vinkje weg bij "Bij het starten automatisch op updates controleren".
+
+Volledige privacyverklaring:
+https://github.com/Jack-Mutsers/ScanDesk/blob/main/PRIVACY.md

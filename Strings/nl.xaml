@@ -51,6 +51,8 @@
     <sys:String x:Key="DevBuild">Ontwikkelversie</sys:String>
     <sys:String x:Key="TestBuild">Testversie {0}</sys:String>
     <sys:String x:Key="CheckUpdates">Controleren op updates</sys:String>
+    <sys:String x:Key="AutoUpdate">Bij het starten automatisch op updates controleren</sys:String>
+    <sys:String x:Key="AutoUpdate.Tooltip">ScanDesk vraagt dan bij het starten aan GitHub of er een nieuwe versie is. Er worden geen scans of persoonlijke gegevens verstuurd.</sys:String>
 
     <!-- Hoofdvenster: voorbeeld -->
     <sys:String x:Key="Update.WhatsNew">Wat is er nieuw</sys:String>

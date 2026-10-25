@@ -208,8 +208,7 @@ public static class WiaScanner
     {
         try
         {
-            dynamic? p = Find(props, id);
-            if (p != null && (int)p.SubType == 1) return (int)p.SubTypeMax; // range
+            if (Find(props, id) is { } p && (int)p.SubType == 1) return (int)p.SubTypeMax; // range
         }
         catch (COMException) { }
         return null;

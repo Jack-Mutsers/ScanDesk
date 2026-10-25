@@ -13,7 +13,9 @@ AppId={{6F1C2B7A-3E4D-4C1B-9A55-5C0D2E8B7A10}
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
-AppPublisher=ScanDesk
+AppPublisher=Jack Mutsers
+AppPublisherURL=https://github.com/Jack-Mutsers/ScanDesk
+AppCopyright=Copyright (C) 2026 Jack Mutsers. Licensed under GPL-3.0.
 DefaultDirName={autopf}\{#AppName}
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
@@ -31,8 +33,9 @@ PrivilegesRequiredOverridesAllowed=dialog
 
 [Languages]
 ; Dutch first: it is used when Windows' own language isn't one of these.
-Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
-Name: "english"; MessagesFile: "compiler:Default.isl"
+; InfoBeforeFile shows the privacy summary during installation (skipped for silent in-app updates).
+Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"; InfoBeforeFile: "privacy-nl.txt"
+Name: "english"; MessagesFile: "compiler:Default.isl"; InfoBeforeFile: "privacy-en.txt"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"

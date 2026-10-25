@@ -6,6 +6,7 @@ namespace ScanDesk;
 public sealed class AppSettings
 {
     public string Language { get; set; } = Loc.DefaultLanguage;
+    public bool AutoCheckUpdates { get; set; } = true;
     public string? ScannerId { get; set; }          // last used
     public string? DefaultScannerId { get; set; }
     public List<string> HiddenScannerIds { get; set; } = [];

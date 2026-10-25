@@ -28,6 +28,7 @@ public partial class MainWindow : Window
         PageList.ItemsSource = _pages;
         foreach (var (code, name) in Loc.Languages) LanguageBox.Items.Add(new ComboBoxItem { Content = name, Tag = code });
         SelectByTag(LanguageBox, Loc.Language);
+        AutoUpdateBox.IsChecked = _settings.AutoCheckUpdates;
         UpdateVersionText();
         _pages.CollectionChanged += (_, _) => { Renumber(); UpdateUi(); };
 
@@ -483,7 +484,7 @@ public partial class MainWindow : Window
     /// <summary>Looks for a newer release on GitHub. Automatic checks stay silent when offline or up to date.</summary>
     async Task CheckForUpdatesAsync(bool manual)
     {
-        if (!manual && UpdateChecker.CurrentVersion == null) return; // local builds don't nag
+        if (!manual && (UpdateChecker.CurrentVersion == null || !_settings.AutoCheckUpdates)) return; // local builds don't nag
         if (manual) SetStatus(Loc.T("Status.CheckingUpdates"));
         try
         {
@@ -498,6 +499,15 @@ public partial class MainWindow : Window
     }
 
     async void CheckUpdates_Click(object sender, RoutedEventArgs e) => await CheckForUpdatesAsync(manual: true);
+
+    /// <summary>Lets people turn off the startup check, the only time ScanDesk contacts the internet on its own.</summary>
+    void AutoUpdate_Changed(object sender, RoutedEventArgs e)
+    {
+        bool on = AutoUpdateBox.IsChecked == true;
+        if (on == _settings.AutoCheckUpdates) return;
+        _settings.AutoCheckUpdates = on;
+        _settings.Save();
+    }
 
     void ShowUpdate(UpdateInfo update)
     {
