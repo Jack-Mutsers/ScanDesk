@@ -42,10 +42,7 @@ public partial class SettingsWindow : Window
         (page switch { SettingsPage.Scanners => NavScanners, SettingsPage.About => NavAbout, _ => NavGeneral }).IsChecked = true;
     }
 
-    static string VersionLabel() =>
-        UpdateChecker.CurrentVersion != null ? Loc.F("Version", UpdateChecker.CurrentVersionText)
-        : UpdateChecker.CurrentVersionText.Contains("-test") ? Loc.F("TestBuild", UpdateChecker.CurrentVersionText)
-        : Loc.T("DevBuild");
+    static string VersionLabel() => UpdateChecker.VersionLabel();
 
     void Nav_Checked(object sender, RoutedEventArgs e)
     {
