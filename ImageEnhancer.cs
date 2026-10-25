@@ -136,7 +136,7 @@ public static class ImageEnhancer
     /// Unsharp mask (Gaussian approximated by three box blurs). Processes the image in horizontal
     /// strips in place so very large scans (1200 dpi) don't need a second full-size buffer.
     /// </summary>
-    static void Sharpen(byte[] px, int w, int h, int stride, int ch, int radius, double amount, int threshold)
+    internal static void Sharpen(byte[] px, int w, int h, int stride, int ch, int radius, double amount, int threshold)
     {
         const int StripRows = 256;
         int rowBytes = w * ch;

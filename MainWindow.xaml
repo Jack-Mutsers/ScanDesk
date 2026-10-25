@@ -168,6 +168,20 @@
                                 <TextBlock Text="Undo" Margin="6,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
+                        <Button x:Name="FitButton" Style="{StaticResource SoftButton}" Height="32" Margin="8,0,0,0" Click="Fit_Click"
+                                ToolTip="Enlarge the page to fill a full sheet, with sharp, high-quality resizing">
+                            <Button.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Fit to A4 (210 × 297 mm)" Tag="A4" Click="FitPaper_Click"/>
+                                    <MenuItem Header="Fit to Letter (8.5 × 11 in)" Tag="Letter" Click="FitPaper_Click"/>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE740;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Fit to page" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="&#xE70D;" FontFamily="{StaticResource IconFont}" FontSize="9" Margin="6,1,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                         <Button x:Name="CropButton" Style="{StaticResource SoftButton}" Height="32" Margin="8,0,0,0" Click="Crop_Click"
                                 ToolTip="Select part of this page to keep">
                             <StackPanel Orientation="Horizontal">

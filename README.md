@@ -9,6 +9,7 @@ A simple Windows 11 scanner app: scan several pages from any WIA scanner (Epson,
 - Image correction like Epson Scan 2: deep blacks, white paper, sharper text (Document / Photo / Off)
 - Straightens crooked pages automatically
 - Crop, rotate, reorder and delete pages, with undo
+- Fit to page: enlarge an A5 scan or a cropped part to fill an A4 or Letter sheet, with sharp high-quality resizing instead of blurry stretching
 - Add existing images by dragging them into the window
 
 ## Download

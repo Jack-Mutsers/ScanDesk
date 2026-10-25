@@ -6,7 +6,8 @@ using System.Windows.Media.Imaging;
 
 namespace ScanDesk;
 
-public sealed record PageImage(string FilePath, int PixelWidth, int PixelHeight, BitmapSource Thumbnail);
+/// <summary>One version of a page image. <paramref name="Dpi"/> is 0 when the edit keeps the page's resolution.</summary>
+public sealed record PageImage(string FilePath, int PixelWidth, int PixelHeight, BitmapSource Thumbnail, double Dpi = 0);
 
 public sealed class ScannedPage : INotifyPropertyChanged
 {
@@ -20,7 +21,8 @@ public sealed class ScannedPage : INotifyPropertyChanged
     public int Number { get => _number; set => Set(ref _number, value); }
     public int PixelWidth { get => _pixelWidth; set { Set(ref _pixelWidth, value); OnChanged(nameof(SizeText)); } }
     public int PixelHeight { get => _pixelHeight; set { Set(ref _pixelHeight, value); OnChanged(nameof(SizeText)); } }
-    public double Dpi { get; set; }
+    double _dpi;
+    public double Dpi { get => _dpi; set { Set(ref _dpi, value); OnChanged(nameof(SizeText)); } }
     public bool IsGray { get; set; }
 
     public string SizeText => $"{PixelWidth} × {PixelHeight} px · {Dpi:0} dpi";
@@ -49,7 +51,7 @@ public sealed class ScannedPage : INotifyPropertyChanged
     /// <summary>All image files this page owns, including undo history.</summary>
     public IEnumerable<string> AllFiles() => _history.Select(h => h.FilePath).Append(FilePath);
 
-    PageImage Current => new(FilePath, PixelWidth, PixelHeight, Thumbnail!);
+    PageImage Current => new(FilePath, PixelWidth, PixelHeight, Thumbnail!, Dpi);
 
     void SetImage(PageImage image)
     {
@@ -57,6 +59,7 @@ public sealed class ScannedPage : INotifyPropertyChanged
         PixelWidth = image.PixelWidth;
         PixelHeight = image.PixelHeight;
         Thumbnail = image.Thumbnail;
+        if (image.Dpi > 0) Dpi = image.Dpi;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -191,6 +194,13 @@ public static class PageStore
     /// <summary>Cuts out a rectangle (in image pixels) into a new file (the original is kept for undo).</summary>
     public static PageImage Crop(string path, System.Windows.Int32Rect rect) =>
         SaveEdit(new CroppedBitmap(Load(path), rect), "crop");
+
+    /// <summary>Enlarges (or shrinks) a page to fill a sheet of paper, with high-quality resampling.</summary>
+    public static PageImage FitToPaper(string path, double dpi, bool gray, PaperSize paper)
+    {
+        var result = Upscaler.FitToPaper(Load(path), dpi, paper, gray, out double newDpi);
+        return SaveEdit(result, "fit") with { Dpi = newDpi };
+    }
 
     static PageImage SaveEdit(BitmapSource image, string prefix)
     {

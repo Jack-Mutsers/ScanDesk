@@ -442,6 +442,49 @@ public partial class MainWindow : Window
         ShowPreview();
     }
 
+    // ---------- Fit to page ----------
+
+    void Fit_Click(object sender, RoutedEventArgs e)
+    {
+        if (FitButton.ContextMenu is not { } menu) return;
+        menu.PlacementTarget = FitButton;
+        menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        menu.IsOpen = true;
+    }
+
+    async void FitPaper_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as MenuItem)?.Tag is string tag) await FitToPaperAsync(Enum.Parse<PaperSize>(tag));
+    }
+
+    /// <summary>Enlarges the selected pages to fill a full sheet (undoable).</summary>
+    async Task FitToPaperAsync(PaperSize paper)
+    {
+        var sel = SelectedPages();
+        if (sel.Count == 0 || _busy) return;
+        SetBusy(true, $"Enlarging to {Upscaler.PaperName(paper)}…");
+        try
+        {
+            foreach (var p in sel)
+            {
+                string path = p.FilePath;
+                double dpi = p.Dpi;
+                bool gray = p.IsGray;
+                p.Apply(await Task.Run(() => PageStore.FitToPaper(path, dpi, gray, paper)));
+            }
+            _unsaved = true;
+            SetStatus(sel.Count == 1
+                ? $"Page {sel[0].Number} now fills a full {Upscaler.PaperName(paper)} page. Press Undo to go back."
+                : $"{sel.Count} pages now fill a {Upscaler.PaperName(paper)} sheet. Press Undo on a page to go back.");
+        }
+        catch (Exception ex)
+        {
+            SetStatus("Enlarging failed: " + ex.Message);
+        }
+        finally { SetBusy(false); }
+        ShowPreview();
+    }
+
     void Undo_Click(object sender, RoutedEventArgs e) => UndoPage();
 
     void UndoPage()
@@ -748,6 +791,7 @@ public partial class MainWindow : Window
             b.IsEnabled = !_busy && hasSel;
         var preview = PreviewPage;
         CropButton.IsEnabled = !_busy && preview != null;
+        FitButton.IsEnabled = !_busy && preview != null;
         UndoButton.Visibility = preview?.CanUndo == true ? Visibility.Visible : Visibility.Collapsed;
         UndoButton.IsEnabled = !_busy;
         if (!hasPages) { PreviewTitle.Text = "Preview"; PreviewInfo.Text = ""; }
